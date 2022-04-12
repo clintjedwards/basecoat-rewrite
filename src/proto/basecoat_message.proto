@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "github.com/clintjedwards/gofer/proto";
+
+// Account represents a user account
+message Account {
+  string id = 1;
+  bytes hash = 2;
+  enum State {
+    UNKNOWN = 0;
+    ACTIVE = 1;
+    DISABLED = 2;
+  }
+  State state = 3;
+  int64 created = 4;
+  int64 modified = 5;
+}
