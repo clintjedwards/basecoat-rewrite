@@ -2,6 +2,7 @@ mod api;
 mod cli;
 mod proto;
 
-fn main() {
-    cli::init()
+#[tokio::main]
+async fn main() {
+    cli::init().await;
 }

@@ -87,14 +87,12 @@ pub struct GetSystemInfoRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetSystemInfoResponse {
     #[prost(string, tag="1")]
-    pub build_time: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
     pub commit: ::prost::alloc::string::String,
-    #[prost(bool, tag="3")]
+    #[prost(bool, tag="2")]
     pub debug_enabled: bool,
-    #[prost(bool, tag="4")]
+    #[prost(bool, tag="3")]
     pub frontend_enabled: bool,
-    #[prost(string, tag="5")]
+    #[prost(string, tag="4")]
     pub semver: ::prost::alloc::string::String,
 }
 /// Generated client implementations.

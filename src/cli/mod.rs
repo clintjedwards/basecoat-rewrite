@@ -1,3 +1,4 @@
+use crate::api;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Parser)]
@@ -10,7 +11,7 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Commands {
-    /// Manages service related commands pertaining to administration
+    /// Manages service related commands pertaining to administration.
     Service(ServiceSubcommands),
 }
 
@@ -22,7 +23,7 @@ struct ServiceSubcommands {
 
 #[derive(Debug, Subcommand)]
 enum ServiceCommands {
-    /// Start the Basecoat GRPC/HTTP combined service
+    /// Start the Basecoat GRPC service.
     #[clap(
         long_about = "Basecoat runs a a GRPC backend combined with GRPC-WEB/HTTP1.
     Running this command attempts to start the long running service. This command will block and only
@@ -32,7 +33,7 @@ enum ServiceCommands {
 }
 
 /// init the CLI and appropriately run the correct command.
-pub fn init() {
+pub async fn init() {
     let args = Cli::parse();
 
     match args.command {
@@ -40,7 +41,7 @@ pub fn init() {
             let service_cmds = service.command;
             match service_cmds {
                 ServiceCommands::Start => {
-                    println!("start here!")
+                    api::start("127.0.0.1:8080").await;
                 }
             }
         }

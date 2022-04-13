@@ -31,9 +31,8 @@ message DisableAccountResponse {}
 
 message GetSystemInfoRequest {}
 message GetSystemInfoResponse {
-  string build_time = 1;
-  string commit = 2;
-  bool debug_enabled = 3;
-  bool frontend_enabled = 4;
-  string semver = 5;
+  string commit = 1;
+  bool debug_enabled = 2;
+  bool frontend_enabled = 3;
+  string semver = 4;
 }
