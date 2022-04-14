@@ -1,5 +1,6 @@
 mod api;
 mod cli;
+mod conf;
 mod proto;
 
 #[tokio::main]

@@ -1,4 +1,5 @@
 use crate::api;
+use crate::conf;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Parser)]
@@ -41,7 +42,14 @@ pub async fn init() {
             let service_cmds = service.command;
             match service_cmds {
                 ServiceCommands::Start => {
-                    api::start("127.0.0.1:8080").await;
+                    let conf = conf::get(
+                        conf::Kind::Api(conf::api::Config::default()),
+                        vec!["./test.yml".to_string()],
+                    )
+                    .unwrap();
+                    if let conf::Kind::Api(api_config) = conf {
+                        api::Api::new(api_config).start().await;
+                    }
                 }
             }
         }

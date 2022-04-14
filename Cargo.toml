@@ -7,8 +7,11 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "3.1.8", features = ["derive"] }
+config = "0.13.0"
 protobuf = "2.27.1"
 prost = "0.10.0"
+serde = "1.0.136"
+typetag = "0.1"                                                       # Allow us to deserialize trait objects
 tonic = "0.7.1"
 tonic-reflection = "0.4.0"
 tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
