@@ -1,9 +1,5 @@
 use serde::Deserialize;
 
-pub fn default_config_paths() -> Vec<String> {
-    vec!["/etc/basecoat/basecoat.hcl".to_string()]
-}
-
 #[derive(Deserialize, Default, Debug, Clone)]
 pub struct Config {
     pub general: General,

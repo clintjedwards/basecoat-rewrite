@@ -1,5 +1,7 @@
 use crate::api;
 use crate::conf;
+use crate::proto::basecoat_client::BasecoatClient;
+use crate::proto::GetSystemInfoRequest;
 use clap::{Args, Subcommand};
 use std::error::Error;
 
@@ -18,21 +20,20 @@ pub enum ServiceCommands {
     gracefully stop on SIGINT or SIGTERM signals."
     )]
     Start,
+    Info,
 }
 
-pub fn start(user_config: Option<String>) -> Result<impl std::future::Future, Box<dyn Error>> {
-    let config_paths;
-    if let Some(user_config) = user_config {
-        config_paths = vec![user_config];
-    } else {
-        config_paths = conf::api::default_config_paths();
-    }
+pub fn start(config: conf::api::Config) -> impl std::future::Future {
+    api::Api::new(config).start()
+}
 
-    let parsed_config = conf::parse(conf::Kind::Api(conf::api::Config::default()), config_paths)?;
+pub async fn info(config: conf::cli::Config) -> Result<(), Box<dyn Error>> {
+    let channel = tonic::transport::Channel::from_shared(config.server.to_string())?;
+    let conn = channel.connect().await?;
 
-    if let conf::Kind::Api(api_config) = parsed_config {
-        Ok(api::Api::new(api_config).start())
-    } else {
-        Err("could not retrieve correct configuration type".into())
-    }
+    let mut client = BasecoatClient::new(conn);
+    let request = tonic::Request::new(GetSystemInfoRequest {});
+    let response = client.get_system_info(request).await?.into_inner();
+    println!("{:?}", response);
+    Ok(())
 }
