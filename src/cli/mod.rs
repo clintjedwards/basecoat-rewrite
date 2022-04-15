@@ -1,11 +1,17 @@
-use crate::api;
-use crate::conf;
-use clap::{Args, Parser, Subcommand};
+mod service;
+use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
 #[clap(name = "basecoat")]
 #[clap(about = "Basecoat is a formula tracking and search tool")]
+#[clap(version)]
 struct Cli {
+    #[clap(
+        long,
+        help = "Set configuration path; default to default paths if not set"
+    )]
+    config: Option<String>,
+
     #[clap(subcommand)]
     command: Commands,
 }
@@ -13,24 +19,7 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum Commands {
     /// Manages service related commands pertaining to administration.
-    Service(ServiceSubcommands),
-}
-
-#[derive(Debug, Args)]
-struct ServiceSubcommands {
-    #[clap(subcommand)]
-    command: ServiceCommands,
-}
-
-#[derive(Debug, Subcommand)]
-enum ServiceCommands {
-    /// Start the Basecoat GRPC service.
-    #[clap(
-        long_about = "Basecoat runs a a GRPC backend combined with GRPC-WEB/HTTP1.
-    Running this command attempts to start the long running service. This command will block and only
-    gracefully stop on SIGINT or SIGTERM signals."
-    )]
-    Start,
+    Service(service::ServiceSubcommands),
 }
 
 /// init the CLI and appropriately run the correct command.
@@ -41,15 +30,8 @@ pub async fn init() {
         Commands::Service(service) => {
             let service_cmds = service.command;
             match service_cmds {
-                ServiceCommands::Start => {
-                    let conf = conf::get(
-                        conf::Kind::Api(conf::api::Config::default()),
-                        vec!["./test.yml".to_string()],
-                    )
-                    .unwrap();
-                    if let conf::Kind::Api(api_config) = conf {
-                        api::Api::new(api_config).start().await;
-                    }
+                service::ServiceCommands::Start => {
+                    service::start(args.config).unwrap().await;
                 }
             }
         }

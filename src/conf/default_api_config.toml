@@ -1,0 +1,6 @@
+[general]
+debug = true
+log_level = "debug"
+
+[server]
+url = "127.0.0.1:8080"

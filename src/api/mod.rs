@@ -42,6 +42,6 @@ impl Api {
         Server::builder()
             .add_service(reflection)
             .add_service(BasecoatServer::new(self.clone()))
-            .serve(self.config.url.parse().unwrap())
+            .serve(self.config.server.url.parse().unwrap())
     }
 }
