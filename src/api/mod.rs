@@ -1,6 +1,7 @@
 use crate::conf;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::{GetSystemInfoRequest, GetSystemInfoResponse};
+use slog_scope::info;
 use tonic::{transport::Server, Request, Response, Status};
 use tonic_reflection::server::Builder;
 
@@ -38,6 +39,8 @@ impl Api {
             .register_encoded_file_descriptor_set(tonic::include_file_descriptor_set!("reflection"))
             .build()
             .expect("could not build reflection server");
+
+        info!("started grpc service"; "address" => &self.config.server.url);
 
         Server::builder()
             .add_service(reflection)
