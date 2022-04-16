@@ -23,8 +23,8 @@ pub enum ServiceCommands {
     Info,
 }
 
-pub fn start(config: conf::api::Config) -> impl std::future::Future {
-    api::Api::new(config).start()
+pub async fn start(config: conf::api::Config) {
+    api::Api::new(config).await.start().await;
 }
 
 pub async fn info(config: conf::cli::Config) -> Result<(), Box<dyn Error>> {

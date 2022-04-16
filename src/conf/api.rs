@@ -15,6 +15,7 @@ pub struct General {
 #[derive(Deserialize, Default, Debug, Clone)]
 pub struct Server {
     pub url: String,
+    pub storage_path: String,
     pub tls_cert_path: Option<String>,
     pub tls_key_path: Option<String>,
 }
