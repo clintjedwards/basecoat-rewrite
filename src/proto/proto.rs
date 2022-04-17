@@ -1,4 +1,16 @@
-/// Account represents a user account
+/// Organization represents a group of user accounts.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Organization {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(int64, tag="3")]
+    pub created: i64,
+    #[prost(int64, tag="4")]
+    pub modified: i64,
+}
+/// Account represents a user account.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Account {
     #[prost(string, tag="1")]
@@ -22,6 +34,15 @@ pub mod account {
         Disabled = 2,
     }
 }
+/// Organization
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateOrganizationRequest {
+    #[prost(string, tag="1")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateOrganizationResponse {
+}
 /// Account transport messages
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetAccountRequest {
@@ -44,7 +65,7 @@ pub struct ListAccountsResponse {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateAccountRequest {
     #[prost(string, tag="1")]
-    pub id: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub password: ::prost::alloc::string::String,
 }
@@ -178,6 +199,26 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        /// Organization routes (Admin only)
+        pub async fn create_organization(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateOrganizationRequest>,
+        ) -> Result<tonic::Response<super::CreateOrganizationResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateOrganization",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -192,6 +233,11 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::GetSystemInfoRequest>,
         ) -> Result<tonic::Response<super::GetSystemInfoResponse>, tonic::Status>;
+        /// Organization routes (Admin only)
+        async fn create_organization(
+            &self,
+            request: tonic::Request<super::CreateOrganizationRequest>,
+        ) -> Result<tonic::Response<super::CreateOrganizationResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct BasecoatServer<T: Basecoat> {
@@ -269,6 +315,46 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = GetSystemInfoSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateOrganization" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateOrganizationSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateOrganizationRequest>
+                    for CreateOrganizationSvc<T> {
+                        type Response = super::CreateOrganizationResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateOrganizationRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).create_organization(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateOrganizationSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

@@ -10,10 +10,13 @@ service Basecoat {
   // System endpoints
   rpc GetSystemInfo(GetSystemInfoRequest) returns (GetSystemInfoResponse);
 
-  //   // Account routes (Admin only)
+  // Organization routes (Admin only)
+  rpc CreateOrganization(CreateOrganizationRequest)
+      returns (CreateOrganizationResponse);
+
+  // Account routes (Admin only)
   //   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
   //   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
-  //   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
   //   rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
   //   rpc DisableAccount(DisableAccountRequest) returns
   //   (DisableAccountResponse);

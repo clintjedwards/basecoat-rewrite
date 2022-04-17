@@ -1,6 +1,10 @@
 use crate::conf;
+use crate::models::Organization;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
-use crate::proto::{GetSystemInfoRequest, GetSystemInfoResponse};
+use crate::proto::{
+    CreateOrganizationRequest, CreateOrganizationResponse, GetSystemInfoRequest,
+    GetSystemInfoResponse,
+};
 use crate::storage;
 use slog_scope::info;
 use tonic::{transport::Server, Request, Response, Status};
@@ -28,6 +32,17 @@ impl Basecoat for Api {
             semver: BUILD_SEMVER.to_string(),
         }))
     }
+
+    async fn create_organization(
+        &self,
+        request: Request<CreateOrganizationRequest>,
+    ) -> Result<Response<CreateOrganizationResponse>, Status> {
+        let org = Organization::new(&request.into_inner().name);
+        self.storage.create_organization(&org).await;
+
+        info!("Created new organization"; "org" => format!("{:?}",org));
+        Ok(Response::new(CreateOrganizationResponse {}))
+    }
 }
 
 impl Api {
@@ -37,7 +52,7 @@ impl Api {
         Api { conf, storage }
     }
 
-    // start blocking grpc server.
+    // Start blocking grpc server.
     pub async fn start(&self) {
         let reflection = Builder::configure()
             .register_encoded_file_descriptor_set(tonic::include_file_descriptor_set!("reflection"))

@@ -1,3 +1,4 @@
+mod organization;
 mod service;
 use std::str::FromStr;
 
@@ -25,6 +26,9 @@ struct Cli {
 enum Commands {
     /// Manages service related commands pertaining to administration.
     Service(service::ServiceSubcommands),
+
+    /// Manages organization related commands. Most requests are admin only.
+    Organization(organization::OrganizationSubcommands),
 }
 
 fn init_logging(severity: Severity) -> slog_scope::GlobalLoggerGuard {
@@ -72,6 +76,14 @@ pub async fn init() {
                 }
                 service::ServiceCommands::Info => {
                     service::info(config).await.expect("could not get info");
+                }
+            }
+        }
+        Commands::Organization(org) => {
+            let org_cmds = org.command;
+            match org_cmds {
+                organization::OrganizationCommands::Create { name } => {
+                    organization::create(config, &name).await.unwrap();
                 }
             }
         }

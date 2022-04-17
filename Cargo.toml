@@ -14,9 +14,10 @@ serde = "1.0.136"
 slog = "2.7.0"
 slog-scope = "4.4.0"
 sloggers = "2.1.1"
-sqlx = { version = "0.5.13", features = ["runtime-tokio-rustls", "sqlite"] }
-rust-embed = "6.3.0"
-typetag = "0.1"                                                              # Allow us to deserialize trait objects
+sqlx = { version = "0.5", features = ["runtime-tokio-rustls", "sqlite"] }
+nanoid = "0.4.0"                                                          # UUID generation
+rust-embed = "6.3.0"                                                      # We embed the configuration files and frontend
+typetag = "0.1"                                                           # Allow us to deserialize trait objects
 tonic = "0.7.1"
 tonic-reflection = "0.4.0"
 tokio = { version = "1.0", features = ["full"] }
