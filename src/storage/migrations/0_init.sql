@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS organizations (
     modified INTEGER NOT NULL
 );
 
+CREATE INDEX idx_organizations_name ON organizations (name);
+
 CREATE TABLE IF NOT EXISTS users (
     id       TEXT    PRIMARY KEY,
     name     TEXT    NOT NULL,

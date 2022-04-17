@@ -11,6 +11,8 @@ service Basecoat {
   rpc GetSystemInfo(GetSystemInfoRequest) returns (GetSystemInfoResponse);
 
   // Organization routes (Admin only)
+  rpc ListOrganizations(ListOrganizationsRequest)
+      returns (ListOrganizationsResponse);
   rpc CreateOrganization(CreateOrganizationRequest)
       returns (CreateOrganizationResponse);
 

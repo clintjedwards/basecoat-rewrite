@@ -3,3 +3,5 @@
 #[allow(clippy::module_inception)]
 mod proto;
 pub use self::proto::*;
+
+mod from;

@@ -1,9 +1,10 @@
 use crate::conf;
 use crate::models::Organization;
+use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::{
     CreateOrganizationRequest, CreateOrganizationResponse, GetSystemInfoRequest,
-    GetSystemInfoResponse,
+    GetSystemInfoResponse, ListOrganizationsRequest, ListOrganizationsResponse,
 };
 use crate::storage;
 use slog_scope::info;
@@ -42,6 +43,21 @@ impl Basecoat for Api {
 
         info!("Created new organization"; "org" => format!("{:?}",org));
         Ok(Response::new(CreateOrganizationResponse {}))
+    }
+
+    async fn list_organizations(
+        &self,
+        _: Request<ListOrganizationsRequest>,
+    ) -> Result<Response<ListOrganizationsResponse>, Status> {
+        let orgs_raw = self.storage.list_organizations().await;
+        let orgs = orgs_raw
+            .into_iter()
+            .map(proto::Organization::from)
+            .collect();
+
+        Ok(Response::new(ListOrganizationsResponse {
+            organizations: orgs,
+        }))
     }
 }
 

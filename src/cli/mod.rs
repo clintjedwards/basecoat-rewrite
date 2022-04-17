@@ -85,6 +85,9 @@ pub async fn init() {
                 organization::OrganizationCommands::Create { name } => {
                     organization::create(config, &name).await.unwrap();
                 }
+                organization::OrganizationCommands::List => {
+                    organization::list(config).await.unwrap();
+                }
             }
         }
     }

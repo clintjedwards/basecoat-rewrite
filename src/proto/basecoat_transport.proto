@@ -6,6 +6,8 @@ option go_package = "github.com/clintjedwards/gofer/proto";
 import "basecoat_message.proto";
 
 // Organization
+message ListOrganizationsRequest {}
+message ListOrganizationsResponse { repeated Organization organizations = 1; }
 message CreateOrganizationRequest { string name = 1; }
 message CreateOrganizationResponse {}
 

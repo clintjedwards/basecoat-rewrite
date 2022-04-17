@@ -2,6 +2,21 @@ use crate::models::Organization;
 use crate::storage::Db;
 
 impl Db {
+    pub async fn list_organizations(&self) -> Vec<Organization> {
+        let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
+
+        sqlx::query_as::<_, Organization>(
+            r#"
+        SELECT id, name, created, modified
+        FROM organizations
+        ORDER BY name
+            "#,
+        )
+        .fetch_all(&mut conn)
+        .await
+        .unwrap()
+    }
+
     pub async fn create_organization(&self, org: &Organization) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
