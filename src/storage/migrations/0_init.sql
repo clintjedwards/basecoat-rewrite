@@ -8,14 +8,15 @@ CREATE TABLE IF NOT EXISTS organizations (
 CREATE INDEX idx_organizations_name ON organizations (name);
 
 CREATE TABLE IF NOT EXISTS users (
-    id       TEXT    PRIMARY KEY,
+    id       TEXT    NOT NULL,
     name     TEXT    NOT NULL,
     hash     TEXT    NOT NULL,
     state    TEXT    NOT NULL,
     created  INTEGER NOT NULL,
     modified INTEGER NOT NULL,
     org_id   TEXT    NOT NULL,
-    FOREIGN KEY (org_id) REFERENCES organizations(id)
+    FOREIGN KEY (org_id) REFERENCES organizations(id),
+    PRIMARY KEY (id, org_id)
 );
 
 

@@ -10,22 +10,22 @@ pub struct Organization {
     #[prost(int64, tag="4")]
     pub modified: i64,
 }
-/// Account represents a user account.
+/// User represents a user user.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Account {
+pub struct User {
     #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
-    #[prost(bytes="vec", tag="2")]
-    pub hash: ::prost::alloc::vec::Vec<u8>,
-    #[prost(enumeration="account::State", tag="3")]
+    #[prost(enumeration="user::State", tag="2")]
     pub state: i32,
-    #[prost(int64, tag="4")]
+    #[prost(int64, tag="3")]
     pub created: i64,
-    #[prost(int64, tag="5")]
+    #[prost(int64, tag="4")]
     pub modified: i64,
+    #[prost(string, tag="5")]
+    pub org_id: ::prost::alloc::string::String,
 }
-/// Nested message and enum types in `Account`.
-pub mod account {
+/// Nested message and enum types in `User`.
+pub mod user {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
     #[repr(i32)]
     pub enum State {
@@ -33,6 +33,21 @@ pub mod account {
         Active = 1,
         Disabled = 2,
     }
+}
+/// Service
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetSystemInfoRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetSystemInfoResponse {
+    #[prost(string, tag="1")]
+    pub commit: ::prost::alloc::string::String,
+    #[prost(bool, tag="2")]
+    pub debug_enabled: bool,
+    #[prost(bool, tag="3")]
+    pub frontend_enabled: bool,
+    #[prost(string, tag="4")]
+    pub semver: ::prost::alloc::string::String,
 }
 /// Organization
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -61,78 +76,62 @@ pub struct DescribeOrganizationResponse {
     #[prost(message, optional, tag="1")]
     pub organization: ::core::option::Option<Organization>,
 }
-/// Account transport messages
+/// User
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetAccountRequest {
+pub struct ListUsersRequest {
     #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListUsersResponse {
+    #[prost(message, repeated, tag="1")]
+    pub users: ::prost::alloc::vec::Vec<User>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeUserRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
     pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetAccountResponse {
+pub struct DescribeUserResponse {
     #[prost(message, optional, tag="1")]
-    pub account: ::core::option::Option<Account>,
+    pub user: ::core::option::Option<User>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListAccountsRequest {
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListAccountsResponse {
-    #[prost(map="string, message", tag="1")]
-    pub accounts: ::std::collections::HashMap<::prost::alloc::string::String, Account>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateAccountRequest {
+pub struct CreateUserRequest {
     #[prost(string, tag="1")]
-    pub name: ::prost::alloc::string::String,
+    pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
     pub password: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateAccountResponse {
+pub struct CreateUserResponse {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateAccountRequest {
+pub struct ResetUserPasswordRequest {
     #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
     pub id: ::prost::alloc::string::String,
-    #[prost(bytes="vec", tag="2")]
-    pub hash: ::prost::alloc::vec::Vec<u8>,
-    #[prost(enumeration="update_account_request::State", tag="3")]
-    pub state: i32,
-}
-/// Nested message and enum types in `UpdateAccountRequest`.
-pub mod update_account_request {
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-    #[repr(i32)]
-    pub enum State {
-        Unknown = 0,
-        Active = 1,
-        Disabled = 2,
-    }
+    #[prost(string, tag="3")]
+    pub password: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateAccountResponse {
+pub struct ResetUserPasswordResponse {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct DisableAccountRequest {
+pub struct ToggleUserStatusRequest {
     #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
     pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct DisableAccountResponse {
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetSystemInfoRequest {
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetSystemInfoResponse {
-    #[prost(string, tag="1")]
-    pub commit: ::prost::alloc::string::String,
-    #[prost(bool, tag="2")]
-    pub debug_enabled: bool,
-    #[prost(bool, tag="3")]
-    pub frontend_enabled: bool,
-    #[prost(string, tag="4")]
-    pub semver: ::prost::alloc::string::String,
+pub struct ToggleUserStatusResponse {
 }
 /// Generated client implementations.
 pub mod basecoat_client {
@@ -278,6 +277,100 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        /// User routes (Admin only)
+        pub async fn list_users(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListUsersRequest>,
+        ) -> Result<tonic::Response<super::ListUsersResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/ListUsers");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeUserRequest>,
+        ) -> Result<tonic::Response<super::DescribeUserResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeUser",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+        ) -> Result<tonic::Response<super::CreateUserResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateUser",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn reset_user_password(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ResetUserPasswordRequest>,
+        ) -> Result<tonic::Response<super::ResetUserPasswordResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/ResetUserPassword",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn toggle_user_status(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ToggleUserStatusRequest>,
+        ) -> Result<tonic::Response<super::ToggleUserStatusResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/ToggleUserStatus",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -305,6 +398,27 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::DescribeOrganizationRequest>,
         ) -> Result<tonic::Response<super::DescribeOrganizationResponse>, tonic::Status>;
+        /// User routes (Admin only)
+        async fn list_users(
+            &self,
+            request: tonic::Request<super::ListUsersRequest>,
+        ) -> Result<tonic::Response<super::ListUsersResponse>, tonic::Status>;
+        async fn describe_user(
+            &self,
+            request: tonic::Request<super::DescribeUserRequest>,
+        ) -> Result<tonic::Response<super::DescribeUserResponse>, tonic::Status>;
+        async fn create_user(
+            &self,
+            request: tonic::Request<super::CreateUserRequest>,
+        ) -> Result<tonic::Response<super::CreateUserResponse>, tonic::Status>;
+        async fn reset_user_password(
+            &self,
+            request: tonic::Request<super::ResetUserPasswordRequest>,
+        ) -> Result<tonic::Response<super::ResetUserPasswordResponse>, tonic::Status>;
+        async fn toggle_user_status(
+            &self,
+            request: tonic::Request<super::ToggleUserStatusRequest>,
+        ) -> Result<tonic::Response<super::ToggleUserStatusResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct BasecoatServer<T: Basecoat> {
@@ -502,6 +616,202 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = DescribeOrganizationSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListUsers" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListUsersSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ListUsersRequest>
+                    for ListUsersSvc<T> {
+                        type Response = super::ListUsersResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListUsersRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).list_users(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListUsersSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeUserSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeUserRequest>
+                    for DescribeUserSvc<T> {
+                        type Response = super::DescribeUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeUserRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_user(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateUserSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    for CreateUserSvc<T> {
+                        type Response = super::CreateUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateUserRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).create_user(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ResetUserPassword" => {
+                    #[allow(non_camel_case_types)]
+                    struct ResetUserPasswordSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ResetUserPasswordRequest>
+                    for ResetUserPasswordSvc<T> {
+                        type Response = super::ResetUserPasswordResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ResetUserPasswordRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).reset_user_password(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ResetUserPasswordSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ToggleUserStatus" => {
+                    #[allow(non_camel_case_types)]
+                    struct ToggleUserStatusSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ToggleUserStatusRequest>
+                    for ToggleUserStatusSvc<T> {
+                        type Response = super::ToggleUserStatusResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ToggleUserStatusRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).toggle_user_status(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ToggleUserStatusSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

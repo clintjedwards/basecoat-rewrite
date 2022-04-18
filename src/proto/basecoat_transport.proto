@@ -5,6 +5,15 @@ option go_package = "github.com/clintjedwards/gofer/proto";
 
 import "basecoat_message.proto";
 
+// Service
+message GetSystemInfoRequest {}
+message GetSystemInfoResponse {
+  string commit = 1;
+  bool debug_enabled = 2;
+  bool frontend_enabled = 3;
+  string semver = 4;
+}
+
 // Organization
 message ListOrganizationsRequest {}
 message ListOrganizationsResponse { repeated Organization organizations = 1; }
@@ -13,34 +22,28 @@ message CreateOrganizationResponse {}
 message DescribeOrganizationRequest { string id = 1; }
 message DescribeOrganizationResponse { Organization organization = 1; }
 
-// Account transport messages
-message GetAccountRequest { string id = 1; }
-message GetAccountResponse { Account account = 1; }
-message ListAccountsRequest {}
-message ListAccountsResponse { map<string, Account> accounts = 1; }
-message CreateAccountRequest {
-  string name = 1;
-  string password = 2;
+// User
+message ListUsersRequest { string org_id = 1; }
+message ListUsersResponse { repeated User users = 1; }
+message DescribeUserRequest {
+  string org_id = 1;
+  string id = 2;
 }
-message CreateAccountResponse {}
-message UpdateAccountRequest {
-  string id = 1;
-  bytes hash = 2;
-  enum State {
-    UNKNOWN = 0;
-    ACTIVE = 1;
-    DISABLED = 2;
-  }
-  State state = 3;
+message DescribeUserResponse { User user = 1; }
+message CreateUserRequest {
+  string org_id = 1;
+  string name = 2;
+  string password = 3;
 }
-message UpdateAccountResponse {}
-message DisableAccountRequest { string id = 1; }
-message DisableAccountResponse {}
-
-message GetSystemInfoRequest {}
-message GetSystemInfoResponse {
-  string commit = 1;
-  bool debug_enabled = 2;
-  bool frontend_enabled = 3;
-  string semver = 4;
+message CreateUserResponse {}
+message ResetUserPasswordRequest {
+  string org_id = 1;
+  string id = 2;
+  string password = 3;
 }
+message ResetUserPasswordResponse {}
+message ToggleUserStatusRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message ToggleUserStatusResponse {}

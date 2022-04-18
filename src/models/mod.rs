@@ -27,30 +27,31 @@ impl Organization {
 }
 
 #[derive(sqlx::Type, Debug, Clone)]
-pub enum AccountStatus {
+pub enum UserStatus {
     Unknown,
     Active,
     Disabled,
 }
 
-impl Default for AccountStatus {
+impl Default for UserStatus {
     fn default() -> Self {
         Self::Unknown
     }
 }
 
 #[derive(sqlx::FromRow, Default, Debug, Clone)]
-pub struct Account {
+pub struct User {
     pub id: String,
     pub name: String,
     pub hash: String,
-    pub state: AccountStatus,
+    pub state: UserStatus,
     pub created: i64,
     pub modified: i64,
+    pub org_id: String,
 }
 
-impl Account {
-    pub fn new(name: &str, password: &str) -> Self {
+impl User {
+    pub fn new(org: &str, name: &str, password: &str) -> Self {
         let epoch = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -58,13 +59,14 @@ impl Account {
 
         let hashed = hash(password, DEFAULT_COST).unwrap();
 
-        Account {
+        User {
             id: nanoid!(10),
             name: name.to_string(),
             hash: hashed,
-            state: AccountStatus::Active,
+            state: UserStatus::Active,
             created: epoch,
             modified: epoch,
+            org_id: org.to_string(),
         }
     }
 }

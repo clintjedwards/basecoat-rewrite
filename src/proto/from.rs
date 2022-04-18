@@ -14,3 +14,15 @@ impl From<models::Organization> for proto::Organization {
         }
     }
 }
+
+impl From<models::User> for proto::User {
+    fn from(user: models::User) -> Self {
+        proto::User {
+            id: user.id,
+            state: 0,
+            created: user.created,
+            modified: user.modified,
+            org_id: user.org_id,
+        }
+    }
+}

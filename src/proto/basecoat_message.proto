@@ -11,16 +11,16 @@ message Organization {
   int64 modified = 4;
 }
 
-// Account represents a user account.
-message Account {
+// User represents a user user.
+message User {
   string id = 1;
-  bytes hash = 2;
   enum State {
     UNKNOWN = 0;
     ACTIVE = 1;
     DISABLED = 2;
   }
-  State state = 3;
-  int64 created = 4;
-  int64 modified = 5;
+  State state = 2;
+  int64 created = 3;
+  int64 modified = 4;
+  string org_id = 5;
 }

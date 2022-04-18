@@ -1,9 +1,10 @@
 use crate::conf;
-use crate::models::Organization;
+use crate::models::{Organization, User};
 use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::*;
 use crate::storage;
+use bcrypt::{hash, DEFAULT_COST};
 use slog_scope::info;
 use tonic::{transport::Server, Request, Response, Status};
 use tonic_reflection::server::Builder;
@@ -70,6 +71,67 @@ impl Basecoat for Api {
         Ok(Response::new(DescribeOrganizationResponse {
             organization: Some(org),
         }))
+    }
+
+    async fn list_users(
+        &self,
+        request: Request<ListUsersRequest>,
+    ) -> Result<Response<ListUsersResponse>, Status> {
+        let users_raw = self.storage.list_users(&request.into_inner().org_id).await;
+        let users = users_raw.into_iter().map(proto::User::from).collect();
+
+        Ok(Response::new(ListUsersResponse { users }))
+    }
+
+    async fn create_user(
+        &self,
+        request: Request<CreateUserRequest>,
+    ) -> Result<Response<CreateUserResponse>, Status> {
+        let args = &request.into_inner();
+
+        let user = User::new(&args.org_id, &args.name, &args.password);
+
+        self.storage.create_user(user).await;
+
+        Ok(Response::new(CreateUserResponse {}))
+    }
+
+    async fn describe_user(
+        &self,
+        request: Request<DescribeUserRequest>,
+    ) -> Result<Response<DescribeUserResponse>, Status> {
+        let args = &request.into_inner();
+
+        let user: proto::User = self.storage.get_user(&args.org_id, &args.id).await.into();
+
+        Ok(Response::new(DescribeUserResponse { user: Some(user) }))
+    }
+
+    async fn reset_user_password(
+        &self,
+        request: Request<ResetUserPasswordRequest>,
+    ) -> Result<Response<ResetUserPasswordResponse>, Status> {
+        let args = &request.into_inner();
+        let hashed = hash(&args.password, DEFAULT_COST).unwrap();
+
+        self.storage
+            .reset_user_password(&args.org_id, &args.id, &hashed)
+            .await;
+
+        Ok(Response::new(ResetUserPasswordResponse {}))
+    }
+
+    async fn toggle_user_status(
+        &self,
+        request: Request<ToggleUserStatusRequest>,
+    ) -> Result<Response<ToggleUserStatusResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage
+            .toggle_user_status(&args.org_id, &args.id)
+            .await;
+
+        Ok(Response::new(ToggleUserStatusResponse {}))
     }
 }
 
