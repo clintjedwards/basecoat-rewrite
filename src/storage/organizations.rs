@@ -34,4 +34,20 @@ impl Db {
         .await
         .unwrap();
     }
+
+    pub async fn get_organization(&self, id: &str) -> Organization {
+        let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
+
+        sqlx::query_as::<_, Organization>(
+            r#"
+        SELECT id, name, created, modified
+        FROM organizations
+        WHERE id = ?
+            "#,
+        )
+        .bind(id)
+        .fetch_one(&mut conn)
+        .await
+        .unwrap()
+    }
 }

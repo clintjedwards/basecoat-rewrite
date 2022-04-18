@@ -88,6 +88,9 @@ pub async fn init() {
                 organization::OrganizationCommands::List => {
                     organization::list(config).await.unwrap();
                 }
+                organization::OrganizationCommands::Describe { id } => {
+                    organization::describe(config, &id).await.unwrap();
+                }
             }
         }
     }

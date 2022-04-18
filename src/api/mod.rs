@@ -2,10 +2,7 @@ use crate::conf;
 use crate::models::Organization;
 use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
-use crate::proto::{
-    CreateOrganizationRequest, CreateOrganizationResponse, GetSystemInfoRequest,
-    GetSystemInfoResponse, ListOrganizationsRequest, ListOrganizationsResponse,
-};
+use crate::proto::*;
 use crate::storage;
 use slog_scope::info;
 use tonic::{transport::Server, Request, Response, Status};
@@ -57,6 +54,21 @@ impl Basecoat for Api {
 
         Ok(Response::new(ListOrganizationsResponse {
             organizations: orgs,
+        }))
+    }
+
+    async fn describe_organization(
+        &self,
+        request: Request<DescribeOrganizationRequest>,
+    ) -> Result<Response<DescribeOrganizationResponse>, Status> {
+        let org: proto::Organization = self
+            .storage
+            .get_organization(&request.into_inner().id)
+            .await
+            .into();
+
+        Ok(Response::new(DescribeOrganizationResponse {
+            organization: Some(org),
         }))
     }
 }

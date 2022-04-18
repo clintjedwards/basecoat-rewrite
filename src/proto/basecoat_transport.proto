@@ -10,6 +10,8 @@ message ListOrganizationsRequest {}
 message ListOrganizationsResponse { repeated Organization organizations = 1; }
 message CreateOrganizationRequest { string name = 1; }
 message CreateOrganizationResponse {}
+message DescribeOrganizationRequest { string id = 1; }
+message DescribeOrganizationResponse { Organization organization = 1; }
 
 // Account transport messages
 message GetAccountRequest { string id = 1; }

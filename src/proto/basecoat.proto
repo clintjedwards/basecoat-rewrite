@@ -15,9 +15,11 @@ service Basecoat {
       returns (ListOrganizationsResponse);
   rpc CreateOrganization(CreateOrganizationRequest)
       returns (CreateOrganizationResponse);
+  rpc DescribeOrganization(DescribeOrganizationRequest)
+      returns (DescribeOrganizationResponse);
 
   // Account routes (Admin only)
-  //   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
+  //  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
   //   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
   //   rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
   //   rpc DisableAccount(DisableAccountRequest) returns
