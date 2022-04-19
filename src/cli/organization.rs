@@ -15,16 +15,13 @@ pub struct OrganizationSubcommands {
 #[derive(Debug, Subcommand)]
 pub enum OrganizationCommands {
     /// Create a new organization.
-    Create {
-        name: String,
-    },
+    Create { name: String },
 
     /// List all organizations.
     List,
 
-    Describe {
-        id: String,
-    },
+    /// Get details on a specific organization.
+    Describe { id: String },
 }
 
 pub async fn create(config: conf::cli::Config, name: &str) -> Result<(), Box<dyn Error>> {

@@ -1,6 +1,6 @@
 use sqlx::Acquire;
 
-use crate::models::{User, UserStatus};
+use crate::models::{User, UserState};
 use crate::storage::Db;
 
 impl Db {
@@ -11,8 +11,8 @@ impl Db {
             r#"
         SELECT id, name, state, created, modified, org_id
         FROM users
-        ORDER BY id
         WHERE org_id = ?
+        ORDER BY id
             "#,
         )
         .bind(org)
@@ -21,7 +21,7 @@ impl Db {
         .unwrap()
     }
 
-    pub async fn create_user(&self, user: User) {
+    pub async fn create_user(&self, user: &User) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
         sqlx::query(
@@ -30,13 +30,13 @@ impl Db {
         VALUES (?, ?, ?, ?, ?, ?, ?)
             "#,
         )
-        .bind(user.id)
-        .bind(user.name)
-        .bind(user.hash)
-        .bind(user.state)
+        .bind(&user.id)
+        .bind(&user.name)
+        .bind(&user.hash)
+        .bind(&user.state)
         .bind(user.created)
         .bind(user.modified)
-        .bind(user.org_id)
+        .bind(&user.org_id)
         .execute(&mut conn)
         .await
         .unwrap();
@@ -77,13 +77,13 @@ impl Db {
         .unwrap();
     }
 
-    pub async fn toggle_user_status(&self, org: &str, id: &str) {
+    pub async fn toggle_user_state(&self, org: &str, id: &str) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
         let mut tx = conn.begin().await.unwrap();
 
         let current_user = sqlx::query_as::<_, User>(
             r#"
-        SELECT id, name, hash, state, created, modified
+        SELECT id, name, hash, state, created, modified, org_id
         FROM users
         WHERE org_id = ? AND id = ?
             "#,
@@ -95,9 +95,9 @@ impl Db {
         .unwrap();
 
         let opposite_state = match current_user.state {
-            UserStatus::Active => UserStatus::Disabled,
-            UserStatus::Disabled => UserStatus::Active,
-            UserStatus::Unknown => {
+            UserState::Active => UserState::Disabled,
+            UserState::Disabled => UserState::Active,
+            UserState::Unknown => {
                 panic!("user in incorrect state")
             }
         };
@@ -106,10 +106,11 @@ impl Db {
             r#"
         UPDATE users
         SET state = ?
-        WHERE id = ?
+        WHERE org_id = ? AND id = ?
             "#,
         )
         .bind(opposite_state)
+        .bind(org)
         .bind(id)
         .execute(&mut tx)
         .await

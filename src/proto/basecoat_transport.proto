@@ -42,8 +42,8 @@ message ResetUserPasswordRequest {
   string password = 3;
 }
 message ResetUserPasswordResponse {}
-message ToggleUserStatusRequest {
+message ToggleUserStateRequest {
   string org_id = 1;
   string id = 2;
 }
-message ToggleUserStatusResponse {}
+message ToggleUserStateResponse {}

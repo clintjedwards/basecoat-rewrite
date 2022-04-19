@@ -19,7 +19,7 @@ impl From<models::User> for proto::User {
     fn from(user: models::User) -> Self {
         proto::User {
             id: user.id,
-            state: 0,
+            state: user.state as i32,
             created: user.created,
             modified: user.modified,
             org_id: user.org_id,

@@ -91,8 +91,9 @@ impl Basecoat for Api {
 
         let user = User::new(&args.org_id, &args.name, &args.password);
 
-        self.storage.create_user(user).await;
+        self.storage.create_user(&user).await;
 
+        info!("Created new user"; "id" => user.id, "name" => user.name);
         Ok(Response::new(CreateUserResponse {}))
     }
 
@@ -118,20 +119,21 @@ impl Basecoat for Api {
             .reset_user_password(&args.org_id, &args.id, &hashed)
             .await;
 
+        info!("Password reset for user"; "org" => &args.org_id, "id" => &args.id);
         Ok(Response::new(ResetUserPasswordResponse {}))
     }
 
-    async fn toggle_user_status(
+    async fn toggle_user_state(
         &self,
-        request: Request<ToggleUserStatusRequest>,
-    ) -> Result<Response<ToggleUserStatusResponse>, Status> {
+        request: Request<ToggleUserStateRequest>,
+    ) -> Result<Response<ToggleUserStateResponse>, Status> {
         let args = &request.into_inner();
 
-        self.storage
-            .toggle_user_status(&args.org_id, &args.id)
-            .await;
+        //TODO(clintjedwards): toggle_user_state should return the new state.
+        self.storage.toggle_user_state(&args.org_id, &args.id).await;
 
-        Ok(Response::new(ToggleUserStatusResponse {}))
+        info!("User state toggled"; "org" => &args.org_id, "id" => &args.id);
+        Ok(Response::new(ToggleUserStateResponse {}))
     }
 }
 

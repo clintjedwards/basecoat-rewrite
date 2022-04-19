@@ -1,5 +1,6 @@
 mod organization;
 mod service;
+mod user;
 use std::str::FromStr;
 
 use crate::conf;
@@ -29,6 +30,9 @@ enum Commands {
 
     /// Manages organization related commands. Most requests are admin only.
     Organization(organization::OrganizationSubcommands),
+
+    /// Managers user related commands. Most requests are admin only.
+    User(user::UserSubcommands),
 }
 
 fn init_logging(severity: Severity) -> slog_scope::GlobalLoggerGuard {
@@ -90,6 +94,28 @@ pub async fn init() {
                 }
                 organization::OrganizationCommands::Describe { id } => {
                     organization::describe(config, &id).await.unwrap();
+                }
+            }
+        }
+        Commands::User(user) => {
+            let user_cmds = user.command;
+            match user_cmds {
+                user::UserCommands::Create { org_id, name, pass } => {
+                    user::create(config, &org_id, &name, &pass).await.unwrap();
+                }
+                user::UserCommands::Describe { org_id, id } => {
+                    user::describe(config, &org_id, &id).await.unwrap();
+                }
+                user::UserCommands::List { org_id } => {
+                    user::list(config, &org_id).await.unwrap();
+                }
+                user::UserCommands::ResetPassword { org_id, id, pass } => {
+                    user::reset_password(config, &org_id, &id, &pass)
+                        .await
+                        .unwrap();
+                }
+                user::UserCommands::ToggleState { org_id, id } => {
+                    user::toggle_user_state(config, &org_id, &id).await.unwrap();
                 }
             }
         }

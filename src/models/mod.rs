@@ -27,13 +27,13 @@ impl Organization {
 }
 
 #[derive(sqlx::Type, Debug, Clone)]
-pub enum UserStatus {
+pub enum UserState {
     Unknown,
     Active,
     Disabled,
 }
 
-impl Default for UserStatus {
+impl Default for UserState {
     fn default() -> Self {
         Self::Unknown
     }
@@ -44,7 +44,7 @@ pub struct User {
     pub id: String,
     pub name: String,
     pub hash: String,
-    pub state: UserStatus,
+    pub state: UserState,
     pub created: i64,
     pub modified: i64,
     pub org_id: String,
@@ -63,7 +63,7 @@ impl User {
             id: nanoid!(10),
             name: name.to_string(),
             hash: hashed,
-            state: UserStatus::Active,
+            state: UserState::Active,
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),

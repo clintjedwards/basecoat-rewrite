@@ -124,14 +124,14 @@ pub struct ResetUserPasswordRequest {
 pub struct ResetUserPasswordResponse {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ToggleUserStatusRequest {
+pub struct ToggleUserStateRequest {
     #[prost(string, tag="1")]
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ToggleUserStatusResponse {
+pub struct ToggleUserStateResponse {
 }
 /// Generated client implementations.
 pub mod basecoat_client {
@@ -352,10 +352,10 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
-        pub async fn toggle_user_status(
+        pub async fn toggle_user_state(
             &mut self,
-            request: impl tonic::IntoRequest<super::ToggleUserStatusRequest>,
-        ) -> Result<tonic::Response<super::ToggleUserStatusResponse>, tonic::Status> {
+            request: impl tonic::IntoRequest<super::ToggleUserStateRequest>,
+        ) -> Result<tonic::Response<super::ToggleUserStateResponse>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -367,7 +367,7 @@ pub mod basecoat_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/proto.Basecoat/ToggleUserStatus",
+                "/proto.Basecoat/ToggleUserState",
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
@@ -415,10 +415,10 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::ResetUserPasswordRequest>,
         ) -> Result<tonic::Response<super::ResetUserPasswordResponse>, tonic::Status>;
-        async fn toggle_user_status(
+        async fn toggle_user_state(
             &self,
-            request: tonic::Request<super::ToggleUserStatusRequest>,
-        ) -> Result<tonic::Response<super::ToggleUserStatusResponse>, tonic::Status>;
+            request: tonic::Request<super::ToggleUserStateRequest>,
+        ) -> Result<tonic::Response<super::ToggleUserStateResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct BasecoatServer<T: Basecoat> {
@@ -783,25 +783,25 @@ pub mod basecoat_server {
                     };
                     Box::pin(fut)
                 }
-                "/proto.Basecoat/ToggleUserStatus" => {
+                "/proto.Basecoat/ToggleUserState" => {
                     #[allow(non_camel_case_types)]
-                    struct ToggleUserStatusSvc<T: Basecoat>(pub Arc<T>);
+                    struct ToggleUserStateSvc<T: Basecoat>(pub Arc<T>);
                     impl<
                         T: Basecoat,
-                    > tonic::server::UnaryService<super::ToggleUserStatusRequest>
-                    for ToggleUserStatusSvc<T> {
-                        type Response = super::ToggleUserStatusResponse;
+                    > tonic::server::UnaryService<super::ToggleUserStateRequest>
+                    for ToggleUserStateSvc<T> {
+                        type Response = super::ToggleUserStateResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::ToggleUserStatusRequest>,
+                            request: tonic::Request<super::ToggleUserStateRequest>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
                             let fut = async move {
-                                (*inner).toggle_user_status(request).await
+                                (*inner).toggle_user_state(request).await
                             };
                             Box::pin(fut)
                         }
@@ -811,7 +811,7 @@ pub mod basecoat_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = ToggleUserStatusSvc(inner);
+                        let method = ToggleUserStateSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
