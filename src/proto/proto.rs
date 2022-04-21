@@ -34,6 +34,68 @@ pub mod user {
         Disabled = 2,
     }
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Formula {
+    /// Unique ID for formula
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    /// Formula color name
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    /// Used to identify formulas in other systems
+    #[prost(string, tag="3")]
+    pub number: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub notes: ::prost::alloc::string::String,
+    /// Time created in epoch
+    #[prost(int64, tag="5")]
+    pub created: i64,
+    /// Time modified in epoch
+    #[prost(int64, tag="6")]
+    pub modified: i64,
+    #[prost(message, repeated, tag="7")]
+    pub bases: ::prost::alloc::vec::Vec<Base>,
+    #[prost(message, repeated, tag="8")]
+    pub colorants: ::prost::alloc::vec::Vec<Colorant>,
+    #[prost(string, tag="9")]
+    pub org_id: ::prost::alloc::string::String,
+}
+/// Colorants are the different colors included in a base so that a color
+/// can be created
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Colorant {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub manufacturer: ::prost::alloc::string::String,
+    /// Time created in epoch
+    #[prost(int64, tag="4")]
+    pub created: i64,
+    /// Time modified in epoch
+    #[prost(int64, tag="5")]
+    pub modified: i64,
+    #[prost(string, tag="6")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Base {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub manufacturer: ::prost::alloc::string::String,
+    /// Time created in epoch
+    #[prost(int64, tag="4")]
+    pub created: i64,
+    /// Time modified in epoch
+    #[prost(int64, tag="5")]
+    pub modified: i64,
+    #[prost(string, tag="6")]
+    pub org_id: ::prost::alloc::string::String,
+}
 /// Service
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetSystemInfoRequest {
@@ -132,6 +194,135 @@ pub struct ToggleUserStateRequest {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ToggleUserStateResponse {
+}
+/// Formula
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListFormulasRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListFormulasResponse {
+    #[prost(message, repeated, tag="1")]
+    pub formulas: ::prost::alloc::vec::Vec<Formula>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeFormulaRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeFormulaResponse {
+    #[prost(message, optional, tag="1")]
+    pub formula: ::core::option::Option<Formula>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateFormulaRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateFormulaResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteFormulaRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteFormulaResponse {
+}
+/// Colorant
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListColorantsRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListColorantsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub colorants: ::prost::alloc::vec::Vec<Colorant>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeColorantRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeColorantResponse {
+    #[prost(message, optional, tag="1")]
+    pub colorant: ::core::option::Option<Colorant>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateColorantRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateColorantResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteColorantRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteColorantResponse {
+}
+/// Base
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListBasesRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListBasesResponse {
+    #[prost(message, repeated, tag="1")]
+    pub bases: ::prost::alloc::vec::Vec<Base>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeBaseRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeBaseResponse {
+    #[prost(message, optional, tag="1")]
+    pub base: ::core::option::Option<Base>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateBaseRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateBaseResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteBaseRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteBaseResponse {
 }
 /// Generated client implementations.
 pub mod basecoat_client {
@@ -371,6 +562,235 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        /// Formula routes
+        pub async fn list_formulas(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListFormulasRequest>,
+        ) -> Result<tonic::Response<super::ListFormulasResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/ListFormulas",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_formula(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeFormulaRequest>,
+        ) -> Result<tonic::Response<super::DescribeFormulaResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeFormula",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_formula(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateFormulaRequest>,
+        ) -> Result<tonic::Response<super::CreateFormulaResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateFormula",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn delete_formula(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteFormulaRequest>,
+        ) -> Result<tonic::Response<super::DeleteFormulaResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DeleteFormula",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Colorant routes
+        pub async fn list_colorants(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListColorantsRequest>,
+        ) -> Result<tonic::Response<super::ListColorantsResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/ListColorants",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_colorant(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeColorantRequest>,
+        ) -> Result<tonic::Response<super::DescribeColorantResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeColorant",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_colorant(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateColorantRequest>,
+        ) -> Result<tonic::Response<super::CreateColorantResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateColorant",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn delete_colorant(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteColorantRequest>,
+        ) -> Result<tonic::Response<super::DeleteColorantResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DeleteColorant",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Base routes
+        pub async fn list_bases(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListBasesRequest>,
+        ) -> Result<tonic::Response<super::ListBasesResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/ListBases");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_base(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeBaseRequest>,
+        ) -> Result<tonic::Response<super::DescribeBaseResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeBase",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_base(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateBaseRequest>,
+        ) -> Result<tonic::Response<super::CreateBaseResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateBase",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn delete_base(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteBaseRequest>,
+        ) -> Result<tonic::Response<super::DeleteBaseResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DeleteBase",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -419,6 +839,57 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::ToggleUserStateRequest>,
         ) -> Result<tonic::Response<super::ToggleUserStateResponse>, tonic::Status>;
+        /// Formula routes
+        async fn list_formulas(
+            &self,
+            request: tonic::Request<super::ListFormulasRequest>,
+        ) -> Result<tonic::Response<super::ListFormulasResponse>, tonic::Status>;
+        async fn describe_formula(
+            &self,
+            request: tonic::Request<super::DescribeFormulaRequest>,
+        ) -> Result<tonic::Response<super::DescribeFormulaResponse>, tonic::Status>;
+        async fn create_formula(
+            &self,
+            request: tonic::Request<super::CreateFormulaRequest>,
+        ) -> Result<tonic::Response<super::CreateFormulaResponse>, tonic::Status>;
+        async fn delete_formula(
+            &self,
+            request: tonic::Request<super::DeleteFormulaRequest>,
+        ) -> Result<tonic::Response<super::DeleteFormulaResponse>, tonic::Status>;
+        /// Colorant routes
+        async fn list_colorants(
+            &self,
+            request: tonic::Request<super::ListColorantsRequest>,
+        ) -> Result<tonic::Response<super::ListColorantsResponse>, tonic::Status>;
+        async fn describe_colorant(
+            &self,
+            request: tonic::Request<super::DescribeColorantRequest>,
+        ) -> Result<tonic::Response<super::DescribeColorantResponse>, tonic::Status>;
+        async fn create_colorant(
+            &self,
+            request: tonic::Request<super::CreateColorantRequest>,
+        ) -> Result<tonic::Response<super::CreateColorantResponse>, tonic::Status>;
+        async fn delete_colorant(
+            &self,
+            request: tonic::Request<super::DeleteColorantRequest>,
+        ) -> Result<tonic::Response<super::DeleteColorantResponse>, tonic::Status>;
+        /// Base routes
+        async fn list_bases(
+            &self,
+            request: tonic::Request<super::ListBasesRequest>,
+        ) -> Result<tonic::Response<super::ListBasesResponse>, tonic::Status>;
+        async fn describe_base(
+            &self,
+            request: tonic::Request<super::DescribeBaseRequest>,
+        ) -> Result<tonic::Response<super::DescribeBaseResponse>, tonic::Status>;
+        async fn create_base(
+            &self,
+            request: tonic::Request<super::CreateBaseRequest>,
+        ) -> Result<tonic::Response<super::CreateBaseResponse>, tonic::Status>;
+        async fn delete_base(
+            &self,
+            request: tonic::Request<super::DeleteBaseRequest>,
+        ) -> Result<tonic::Response<super::DeleteBaseResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct BasecoatServer<T: Basecoat> {
@@ -812,6 +1283,480 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = ToggleUserStateSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListFormulas" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListFormulasSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ListFormulasRequest>
+                    for ListFormulasSvc<T> {
+                        type Response = super::ListFormulasResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListFormulasRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_formulas(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListFormulasSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeFormula" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeFormulaSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeFormulaRequest>
+                    for DescribeFormulaSvc<T> {
+                        type Response = super::DescribeFormulaResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeFormulaRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_formula(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeFormulaSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateFormula" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateFormulaSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateFormulaRequest>
+                    for CreateFormulaSvc<T> {
+                        type Response = super::CreateFormulaResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateFormulaRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).create_formula(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateFormulaSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DeleteFormula" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteFormulaSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DeleteFormulaRequest>
+                    for DeleteFormulaSvc<T> {
+                        type Response = super::DeleteFormulaResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteFormulaRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).delete_formula(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteFormulaSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListColorants" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListColorantsSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ListColorantsRequest>
+                    for ListColorantsSvc<T> {
+                        type Response = super::ListColorantsResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListColorantsRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_colorants(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListColorantsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeColorant" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeColorantSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeColorantRequest>
+                    for DescribeColorantSvc<T> {
+                        type Response = super::DescribeColorantResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeColorantRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_colorant(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeColorantSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateColorant" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateColorantSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateColorantRequest>
+                    for CreateColorantSvc<T> {
+                        type Response = super::CreateColorantResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateColorantRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).create_colorant(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateColorantSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DeleteColorant" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteColorantSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DeleteColorantRequest>
+                    for DeleteColorantSvc<T> {
+                        type Response = super::DeleteColorantResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteColorantRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).delete_colorant(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteColorantSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListBases" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListBasesSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ListBasesRequest>
+                    for ListBasesSvc<T> {
+                        type Response = super::ListBasesResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListBasesRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).list_bases(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListBasesSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeBase" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeBaseSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeBaseRequest>
+                    for DescribeBaseSvc<T> {
+                        type Response = super::DescribeBaseResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeBaseRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_base(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeBaseSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateBase" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateBaseSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateBaseRequest>
+                    for CreateBaseSvc<T> {
+                        type Response = super::CreateBaseResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateBaseRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).create_base(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateBaseSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DeleteBase" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteBaseSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DeleteBaseRequest>
+                    for DeleteBaseSvc<T> {
+                        type Response = super::DeleteBaseResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteBaseRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).delete_base(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteBaseSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

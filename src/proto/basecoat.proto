@@ -25,4 +25,23 @@ service Basecoat {
   rpc ResetUserPassword(ResetUserPasswordRequest)
       returns (ResetUserPasswordResponse);
   rpc ToggleUserState(ToggleUserStateRequest) returns (ToggleUserStateResponse);
+
+  // Formula routes
+  rpc ListFormulas(ListFormulasRequest) returns (ListFormulasResponse);
+  rpc DescribeFormula(DescribeFormulaRequest) returns (DescribeFormulaResponse);
+  rpc CreateFormula(CreateFormulaRequest) returns (CreateFormulaResponse);
+  rpc DeleteFormula(DeleteFormulaRequest) returns (DeleteFormulaResponse);
+
+  // Colorant routes
+  rpc ListColorants(ListColorantsRequest) returns (ListColorantsResponse);
+  rpc DescribeColorant(DescribeColorantRequest)
+      returns (DescribeColorantResponse);
+  rpc CreateColorant(CreateColorantRequest) returns (CreateColorantResponse);
+  rpc DeleteColorant(DeleteColorantRequest) returns (DeleteColorantResponse);
+
+  // Base routes
+  rpc ListBases(ListBasesRequest) returns (ListBasesResponse);
+  rpc DescribeBase(DescribeBaseRequest) returns (DescribeBaseResponse);
+  rpc CreateBase(CreateBaseRequest) returns (CreateBaseResponse);
+  rpc DeleteBase(DeleteBaseRequest) returns (DeleteBaseResponse);
 }

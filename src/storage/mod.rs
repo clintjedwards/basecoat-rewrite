@@ -1,3 +1,6 @@
+pub mod bases;
+pub mod colorants;
+pub mod formulas;
 pub mod organizations;
 pub mod users;
 use sqlx::{migrate, Pool, Sqlite, SqlitePool};

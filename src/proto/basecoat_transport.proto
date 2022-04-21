@@ -47,3 +47,60 @@ message ToggleUserStateRequest {
   string id = 2;
 }
 message ToggleUserStateResponse {}
+
+// Formula
+message ListFormulasRequest { string org_id = 1; }
+message ListFormulasResponse { repeated Formula Formulas = 1; }
+message DescribeFormulaRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message DescribeFormulaResponse { Formula Formula = 1; }
+message CreateFormulaRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message CreateFormulaResponse {}
+message DeleteFormulaRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message DeleteFormulaResponse {}
+
+// Colorant
+message ListColorantsRequest { string org_id = 1; }
+message ListColorantsResponse { repeated Colorant Colorants = 1; }
+message DescribeColorantRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message DescribeColorantResponse { Colorant Colorant = 1; }
+message CreateColorantRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message CreateColorantResponse {}
+message DeleteColorantRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message DeleteColorantResponse {}
+
+// Base
+message ListBasesRequest { string org_id = 1; }
+message ListBasesResponse { repeated Base Bases = 1; }
+message DescribeBaseRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message DescribeBaseResponse { Base Base = 1; }
+message CreateBaseRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message CreateBaseResponse {}
+message DeleteBaseRequest {
+  string org_id = 1;
+  string name = 2;
+}
+message DeleteBaseResponse {}

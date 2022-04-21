@@ -24,3 +24,44 @@ message User {
   int64 modified = 4;
   string org_id = 5;
 }
+
+message Formula {
+  // Unique ID for formula
+  string id = 1;
+  // Formula color name
+  string name = 2;
+  // Used to identify formulas in other systems
+  string number = 3;
+  string notes = 4;
+  // Time created in epoch
+  int64 created = 5;
+  // Time modified in epoch
+  int64 modified = 6;
+  repeated Base bases = 7;
+  repeated Colorant colorants = 8;
+  string org_id = 9;
+}
+
+// Colorants are the different colors included in a base so that a color
+// can be created
+message Colorant {
+  string id = 1;
+  string name = 2;
+  string manufacturer = 3;
+  // Time created in epoch
+  int64 created = 4;
+  // Time modified in epoch
+  int64 modified = 5;
+  string org_id = 6;
+}
+
+message Base {
+  string id = 1;
+  string name = 2;
+  string manufacturer = 3;
+  // Time created in epoch
+  int64 created = 4;
+  // Time modified in epoch
+  int64 modified = 5;
+  string org_id = 6;
+}

@@ -26,3 +26,55 @@ impl From<models::User> for proto::User {
         }
     }
 }
+
+impl From<models::Formula> for proto::Formula {
+    fn from(formula: models::Formula) -> Self {
+        proto::Formula {
+            id: formula.id,
+            name: formula.name,
+            number: formula.number.unwrap_or_default(),
+            notes: formula.notes.unwrap_or_default(),
+            bases: formula
+                .bases
+                .unwrap_or_default()
+                .into_iter()
+                .map(proto::Base::from)
+                .collect(),
+            colorants: formula
+                .colorants
+                .unwrap_or_default()
+                .into_iter()
+                .map(proto::Colorant::from)
+                .collect(),
+            created: formula.created,
+            modified: formula.modified,
+            org_id: formula.org_id,
+        }
+    }
+}
+
+impl From<models::Base> for proto::Base {
+    fn from(base: models::Base) -> Self {
+        proto::Base {
+            id: base.id,
+            name: base.name,
+            manufacturer: base.manufacturer.unwrap_or_default(),
+            created: base.created,
+            modified: base.modified,
+            org_id: base.org_id,
+        }
+    }
+}
+
+impl From<models::Colorant> for proto::Colorant {
+    fn from(colorant: models::Colorant) -> Self {
+        proto::Colorant {
+            id: colorant.id,
+            name: colorant.name,
+            manufacturer: colorant.manufacturer.unwrap_or_default(),
+            created: colorant.created,
+            modified: colorant.modified,
+            org_id: colorant.org_id,
+        }
+    }
+}

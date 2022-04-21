@@ -135,6 +135,41 @@ impl Basecoat for Api {
         info!("User state toggled"; "org" => &args.org_id, "id" => &args.id);
         Ok(Response::new(ToggleUserStateResponse {}))
     }
+
+    // async fn list_bases(
+    //     &self,
+    //     request: Request<ListBasesRequest>,
+    // ) -> Result<Response<ListBasesResponse>, Status> {
+    //     let bases_raw = self.storage.list_bases(&request.into_inner().org_id).await;
+    //     let bases = bases_raw.into_iter().map(proto::Base::from).collect();
+
+    //     Ok(Response::new(ListBasesResponse { bases }))
+    // }
+
+    // async fn create_base(
+    //     &self,
+    //     request: Request<CreateBaseRequest>,
+    // ) -> Result<Response<CreateBaseResponse>, Status> {
+    //     let args = &request.into_inner();
+
+    //     let base = Base::new(&args.org_id, &args.name, &args.password);
+
+    //     self.storage.create_base(&base).await;
+
+    //     info!("Created new base"; "id" => base.id, "name" => base.name);
+    //     Ok(Response::new(CreateBaseResponse {}))
+    // }
+
+    // async fn describe_base(
+    //     &self,
+    //     request: Request<DescribeBaseRequest>,
+    // ) -> Result<Response<DescribeBaseResponse>, Status> {
+    //     let args = &request.into_inner();
+
+    //     let base: proto::Base = self.storage.get_base(&args.org_id, &args.id).await.into();
+
+    //     Ok(Response::new(DescribeBaseResponse { base: Some(base) }))
+    // }
 }
 
 impl Api {
