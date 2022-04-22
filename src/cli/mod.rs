@@ -1,3 +1,6 @@
+mod base;
+mod colorant;
+mod formula;
 mod organization;
 mod service;
 mod user;
@@ -31,8 +34,17 @@ enum Commands {
     /// Manages organization related commands. Most requests are admin only.
     Organization(organization::OrganizationSubcommands),
 
-    /// Managers user related commands. Most requests are admin only.
+    /// Manages user related commands. Most requests are admin only.
     User(user::UserSubcommands),
+
+    /// Manages formula related commands.
+    Formula(formula::FormulaSubcommands),
+
+    /// Manages colorant related commands.
+    Colorant(colorant::ColorantSubcommands),
+
+    /// Manages base related commands.
+    Base(base::BaseSubcommands),
 }
 
 fn init_logging(severity: Severity) -> slog_scope::GlobalLoggerGuard {
@@ -83,6 +95,7 @@ pub async fn init() {
                 }
             }
         }
+
         Commands::Organization(org) => {
             let org_cmds = org.command;
             match org_cmds {
@@ -97,6 +110,7 @@ pub async fn init() {
                 }
             }
         }
+
         Commands::User(user) => {
             let user_cmds = user.command;
             match user_cmds {
@@ -116,6 +130,60 @@ pub async fn init() {
                 }
                 user::UserCommands::ToggleState { org_id, id } => {
                     user::toggle_user_state(config, &org_id, &id).await.unwrap();
+                }
+            }
+        }
+
+        Commands::Formula(formula) => {
+            let formula_cmds = formula.command;
+            match formula_cmds {
+                formula::FormulaCommands::Create { org_id, name } => {
+                    formula::create(config, &org_id, &name).await.unwrap();
+                }
+                formula::FormulaCommands::List { org_id } => {
+                    formula::list(config, &org_id).await.unwrap();
+                }
+                formula::FormulaCommands::Describe { org_id, id } => {
+                    formula::describe(config, &org_id, &id).await.unwrap();
+                }
+                formula::FormulaCommands::Delete { org_id, id } => {
+                    formula::delete(config, &org_id, &id).await.unwrap();
+                }
+            }
+        }
+
+        Commands::Colorant(colorant) => {
+            let colorant_cmds = colorant.command;
+            match colorant_cmds {
+                colorant::ColorantCommands::Create { org_id, name } => {
+                    colorant::create(config, &org_id, &name).await.unwrap();
+                }
+                colorant::ColorantCommands::List { org_id } => {
+                    colorant::list(config, &org_id).await.unwrap();
+                }
+                colorant::ColorantCommands::Describe { org_id, id } => {
+                    colorant::describe(config, &org_id, &id).await.unwrap();
+                }
+                colorant::ColorantCommands::Delete { org_id, id } => {
+                    colorant::delete(config, &org_id, &id).await.unwrap();
+                }
+            }
+        }
+
+        Commands::Base(base) => {
+            let base_cmds = base.command;
+            match base_cmds {
+                base::BaseCommands::Create { org_id, name } => {
+                    base::create(config, &org_id, &name).await.unwrap();
+                }
+                base::BaseCommands::List { org_id } => {
+                    base::list(config, &org_id).await.unwrap();
+                }
+                base::BaseCommands::Describe { org_id, id } => {
+                    base::describe(config, &org_id, &id).await.unwrap();
+                }
+                base::BaseCommands::Delete { org_id, id } => {
+                    base::delete(config, &org_id, &id).await.unwrap();
                 }
             }
         }

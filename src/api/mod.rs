@@ -1,5 +1,5 @@
 use crate::conf;
-use crate::models::{Organization, User};
+use crate::models::{Base, Colorant, Formula, Organization, User};
 use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::*;
@@ -136,40 +136,164 @@ impl Basecoat for Api {
         Ok(Response::new(ToggleUserStateResponse {}))
     }
 
-    // async fn list_bases(
-    //     &self,
-    //     request: Request<ListBasesRequest>,
-    // ) -> Result<Response<ListBasesResponse>, Status> {
-    //     let bases_raw = self.storage.list_bases(&request.into_inner().org_id).await;
-    //     let bases = bases_raw.into_iter().map(proto::Base::from).collect();
+    async fn list_formulas(
+        &self,
+        request: Request<ListFormulasRequest>,
+    ) -> Result<Response<ListFormulasResponse>, Status> {
+        let formulas_raw = self
+            .storage
+            .list_formulas(&request.into_inner().org_id)
+            .await;
+        let formulas = formulas_raw.into_iter().map(proto::Formula::from).collect();
 
-    //     Ok(Response::new(ListBasesResponse { bases }))
-    // }
+        Ok(Response::new(ListFormulasResponse { formulas }))
+    }
 
-    // async fn create_base(
-    //     &self,
-    //     request: Request<CreateBaseRequest>,
-    // ) -> Result<Response<CreateBaseResponse>, Status> {
-    //     let args = &request.into_inner();
+    async fn create_formula(
+        &self,
+        request: Request<CreateFormulaRequest>,
+    ) -> Result<Response<CreateFormulaResponse>, Status> {
+        let args = &request.into_inner();
 
-    //     let base = Base::new(&args.org_id, &args.name, &args.password);
+        let formula = Formula::new(&args.org_id, &args.name);
 
-    //     self.storage.create_base(&base).await;
+        self.storage.create_formula(&formula).await;
 
-    //     info!("Created new base"; "id" => base.id, "name" => base.name);
-    //     Ok(Response::new(CreateBaseResponse {}))
-    // }
+        info!("Created new formula"; "formula" => format!("{:?}",formula));
+        Ok(Response::new(CreateFormulaResponse {}))
+    }
 
-    // async fn describe_base(
-    //     &self,
-    //     request: Request<DescribeBaseRequest>,
-    // ) -> Result<Response<DescribeBaseResponse>, Status> {
-    //     let args = &request.into_inner();
+    async fn describe_formula(
+        &self,
+        request: Request<DescribeFormulaRequest>,
+    ) -> Result<Response<DescribeFormulaResponse>, Status> {
+        let args = &request.into_inner();
 
-    //     let base: proto::Base = self.storage.get_base(&args.org_id, &args.id).await.into();
+        let formula: proto::Formula = self
+            .storage
+            .get_formula(&args.org_id, &args.id)
+            .await
+            .into();
 
-    //     Ok(Response::new(DescribeBaseResponse { base: Some(base) }))
-    // }
+        Ok(Response::new(DescribeFormulaResponse {
+            formula: Some(formula),
+        }))
+    }
+
+    async fn delete_formula(
+        &self,
+        request: Request<DeleteFormulaRequest>,
+    ) -> Result<Response<DeleteFormulaResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage.delete_formula(&args.org_id, &args.id).await;
+
+        Ok(Response::new(DeleteFormulaResponse {}))
+    }
+
+    async fn list_colorants(
+        &self,
+        request: Request<ListColorantsRequest>,
+    ) -> Result<Response<ListColorantsResponse>, Status> {
+        let colorants_raw = self
+            .storage
+            .list_colorants(&request.into_inner().org_id)
+            .await;
+        let colorants = colorants_raw
+            .into_iter()
+            .map(proto::Colorant::from)
+            .collect();
+
+        Ok(Response::new(ListColorantsResponse { colorants }))
+    }
+
+    async fn create_colorant(
+        &self,
+        request: Request<CreateColorantRequest>,
+    ) -> Result<Response<CreateColorantResponse>, Status> {
+        let args = &request.into_inner();
+
+        let colorant = Colorant::new(&args.org_id, &args.name);
+
+        self.storage.create_colorant(&colorant).await;
+
+        info!("Created new colorant"; "colorant" => format!("{:?}",colorant));
+        Ok(Response::new(CreateColorantResponse {}))
+    }
+
+    async fn describe_colorant(
+        &self,
+        request: Request<DescribeColorantRequest>,
+    ) -> Result<Response<DescribeColorantResponse>, Status> {
+        let args = &request.into_inner();
+
+        let colorant: proto::Colorant = self
+            .storage
+            .get_colorant(&args.org_id, &args.id)
+            .await
+            .into();
+
+        Ok(Response::new(DescribeColorantResponse {
+            colorant: Some(colorant),
+        }))
+    }
+
+    async fn delete_colorant(
+        &self,
+        request: Request<DeleteColorantRequest>,
+    ) -> Result<Response<DeleteColorantResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage.delete_colorant(&args.org_id, &args.id).await;
+
+        Ok(Response::new(DeleteColorantResponse {}))
+    }
+
+    async fn list_bases(
+        &self,
+        request: Request<ListBasesRequest>,
+    ) -> Result<Response<ListBasesResponse>, Status> {
+        let bases_raw = self.storage.list_bases(&request.into_inner().org_id).await;
+        let bases = bases_raw.into_iter().map(proto::Base::from).collect();
+
+        Ok(Response::new(ListBasesResponse { bases }))
+    }
+
+    async fn create_base(
+        &self,
+        request: Request<CreateBaseRequest>,
+    ) -> Result<Response<CreateBaseResponse>, Status> {
+        let args = &request.into_inner();
+
+        let base = Base::new(&args.org_id, &args.name);
+
+        self.storage.create_base(&base).await;
+
+        info!("Created new base"; "base" => format!("{:?}",base));
+        Ok(Response::new(CreateBaseResponse {}))
+    }
+
+    async fn describe_base(
+        &self,
+        request: Request<DescribeBaseRequest>,
+    ) -> Result<Response<DescribeBaseResponse>, Status> {
+        let args = &request.into_inner();
+
+        let base: proto::Base = self.storage.get_base(&args.org_id, &args.id).await.into();
+
+        Ok(Response::new(DescribeBaseResponse { base: Some(base) }))
+    }
+
+    async fn delete_base(
+        &self,
+        request: Request<DeleteBaseRequest>,
+    ) -> Result<Response<DeleteBaseResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage.delete_base(&args.org_id, &args.id).await;
+
+        Ok(Response::new(DeleteBaseResponse {}))
+    }
 }
 
 impl Api {

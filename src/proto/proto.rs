@@ -233,7 +233,7 @@ pub struct DeleteFormulaRequest {
     #[prost(string, tag="1")]
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
-    pub name: ::prost::alloc::string::String,
+    pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteFormulaResponse {
@@ -276,7 +276,7 @@ pub struct DeleteColorantRequest {
     #[prost(string, tag="1")]
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
-    pub name: ::prost::alloc::string::String,
+    pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteColorantResponse {
@@ -319,7 +319,7 @@ pub struct DeleteBaseRequest {
     #[prost(string, tag="1")]
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
-    pub name: ::prost::alloc::string::String,
+    pub id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteBaseResponse {

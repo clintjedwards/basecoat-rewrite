@@ -71,6 +71,7 @@ impl User {
     }
 }
 
+#[derive(Default, Debug, Clone)]
 pub struct Formula {
     pub id: String,
     pub name: String,

@@ -63,7 +63,7 @@ message CreateFormulaRequest {
 message CreateFormulaResponse {}
 message DeleteFormulaRequest {
   string org_id = 1;
-  string name = 2;
+  string id = 2;
 }
 message DeleteFormulaResponse {}
 
@@ -82,7 +82,7 @@ message CreateColorantRequest {
 message CreateColorantResponse {}
 message DeleteColorantRequest {
   string org_id = 1;
-  string name = 2;
+  string id = 2;
 }
 message DeleteColorantResponse {}
 
@@ -101,6 +101,6 @@ message CreateBaseRequest {
 message CreateBaseResponse {}
 message DeleteBaseRequest {
   string org_id = 1;
-  string name = 2;
+  string id = 2;
 }
 message DeleteBaseResponse {}

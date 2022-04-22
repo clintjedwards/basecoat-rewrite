@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS colorants (
 CREATE TABLE IF NOT EXISTS formulas (
     id       TEXT NOT NULL,
     name     TEXT NOT NULL,
-    number   TEXT NOT NULL,
+    number   TEXT,
     notes    TEXT,
     created  INTEGER NOT NULL,
     modified INTEGER NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS formulas_bases (
     base_id TEXT NOT NULL,
     amount TEXT NOT NULL,
     FOREIGN KEY (formula_id) REFERENCES formulas(id) ON DELETE CASCADE,
-    FOREIGN KEY (base_id) REFERENCES bases(id) ON DELETE CASCADE,
+    FOREIGN KEY (base_id) REFERENCES bases(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_formulas_bases_id ON formulas_bases (formula_id);
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS formulas_colorants (
     colorant_id TEXT NOT NULL,
     amount TEXT NOT NULL,
     FOREIGN KEY (formula_id) REFERENCES formulas(id) ON DELETE CASCADE,
-    FOREIGN KEY (colorant_id) REFERENCES colorants(id) ON DELETE CASCADE,
+    FOREIGN KEY (colorant_id) REFERENCES colorants(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_formulas_colorants_id ON formulas_colorants (formula_id);
