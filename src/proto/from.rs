@@ -34,15 +34,9 @@ impl From<models::Formula> for proto::Formula {
             name: formula.name,
             number: formula.number.unwrap_or_default(),
             notes: formula.notes.unwrap_or_default(),
-            bases: formula
-                .bases
-                .unwrap_or_default()
-                .into_iter()
-                .map(proto::Base::from)
-                .collect(),
+            bases: formula.bases.into_iter().map(proto::Base::from).collect(),
             colorants: formula
                 .colorants
-                .unwrap_or_default()
                 .into_iter()
                 .map(proto::Colorant::from)
                 .collect(),
@@ -62,6 +56,7 @@ impl From<models::Base> for proto::Base {
             created: base.created,
             modified: base.modified,
             org_id: base.org_id,
+            amount: base.amount.unwrap_or_default(),
         }
     }
 }
@@ -75,6 +70,7 @@ impl From<models::Colorant> for proto::Colorant {
             created: colorant.created,
             modified: colorant.modified,
             org_id: colorant.org_id,
+            amount: colorant.amount.unwrap_or_default(),
         }
     }
 }

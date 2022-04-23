@@ -1,5 +1,5 @@
 use crate::conf;
-use crate::models::{Base, Colorant, Formula, Organization, User};
+use crate::models::{Base, Colorant, NewFormula, Organization, User};
 use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::*;
@@ -155,12 +155,26 @@ impl Basecoat for Api {
     ) -> Result<Response<CreateFormulaResponse>, Status> {
         let args = &request.into_inner();
 
-        let formula = Formula::new(&args.org_id, &args.name);
+        let new_formula: NewFormula = args.to_owned().into();
 
-        self.storage.create_formula(&formula).await;
+        self.storage.create_formula(&new_formula).await;
 
-        info!("Created new formula"; "formula" => format!("{:?}",formula));
+        info!("Created new formula"; "formula" => format!("{:?}",new_formula));
         Ok(Response::new(CreateFormulaResponse {}))
+    }
+
+    async fn update_formula(
+        &self,
+        request: Request<UpdateFormulaRequest>,
+    ) -> Result<Response<UpdateFormulaResponse>, Status> {
+        let args = &request.into_inner();
+
+        let new_formula: NewFormula = args.to_owned().into();
+
+        self.storage.update_formula(&new_formula).await;
+
+        info!("Updated formula"; "formula" => format!("{:?}",new_formula));
+        Ok(Response::new(UpdateFormulaResponse {}))
     }
 
     async fn describe_formula(

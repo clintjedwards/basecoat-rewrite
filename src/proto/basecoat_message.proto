@@ -53,6 +53,7 @@ message Colorant {
   // Time modified in epoch
   int64 modified = 5;
   string org_id = 6;
+  string amount = 7;
 }
 
 message Base {
@@ -64,4 +65,16 @@ message Base {
   // Time modified in epoch
   int64 modified = 5;
   string org_id = 6;
+  string amount = 7;
+}
+
+// a reference to a colorant and an amount
+message FormulaColorantEntry {
+  string colorant_id = 1;
+  string amount = 2;
+}
+
+message FormulaBaseEntry {
+  string base_id = 1;
+  string amount = 2;
 }

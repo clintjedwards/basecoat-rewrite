@@ -1,8 +1,7 @@
-use crate::models::{Base, Colorant, Formula};
+use crate::models::{Base, Colorant, Formula, NewFormula};
 use crate::storage::Db;
 use sqlx::sqlite::SqliteRow;
-use sqlx::Acquire;
-use sqlx::Row;
+use sqlx::{Acquire, Row};
 
 impl Db {
     pub async fn list_formulas(&self, org: &str) -> Vec<Formula> {
@@ -22,8 +21,8 @@ impl Db {
             name: row.get("name"),
             number: row.get("number"),
             notes: row.get("notes"),
-            bases: None,
-            colorants: None,
+            bases: vec![],
+            colorants: vec![],
             created: row.get("created"),
             modified: row.get("modified"),
             org_id: row.get("org_id"),
@@ -62,11 +61,11 @@ impl Db {
             .unwrap();
 
             if !bases.is_empty() {
-                formula.bases = Some(bases);
+                formula.bases = bases;
             };
 
             if !colorants.is_empty() {
-                formula.colorants = Some(colorants);
+                formula.colorants = colorants;
             };
         }
 
@@ -75,8 +74,9 @@ impl Db {
         formulas
     }
 
-    pub async fn create_formula(&self, formula: &Formula) {
+    pub async fn create_formula(&self, formula: &NewFormula) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
+        let mut tx = conn.begin().await.unwrap();
 
         sqlx::query(
             r#"
@@ -91,9 +91,129 @@ impl Db {
         .bind(formula.created)
         .bind(formula.modified)
         .bind(&formula.org_id)
-        .execute(&mut conn)
+        .execute(&mut tx)
         .await
         .unwrap();
+
+        if !formula.bases.is_empty() {
+            for base in &formula.bases {
+                sqlx::query(
+                    r#"
+        INSERT INTO formulas_bases (formula_id, base_id, org_id, amount)
+        VALUES (?, ?, ?, ?)
+            "#,
+                )
+                .bind(&formula.id)
+                .bind(&base.base_id)
+                .bind(&formula.org_id)
+                .bind(&base.amount)
+                .execute(&mut tx)
+                .await
+                .unwrap();
+            }
+        }
+
+        if !formula.colorants.is_empty() {
+            for colorant in &formula.colorants {
+                sqlx::query(
+                    r#"
+        INSERT INTO formulas_colorants (formula_id, colorant_id, org_id, amount)
+        VALUES (?, ?, ?, ?)
+            "#,
+                )
+                .bind(&formula.id)
+                .bind(&colorant.colorant_id)
+                .bind(&formula.org_id)
+                .bind(&colorant.amount)
+                .execute(&mut tx)
+                .await
+                .unwrap();
+            }
+        }
+
+        tx.commit().await.unwrap();
+    }
+
+    pub async fn update_formula(&self, formula: &NewFormula) {
+        let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
+        let mut tx = conn.begin().await.unwrap();
+
+        sqlx::query(
+            r#"
+        UPDATE formulas
+        SET name = ?, number = ?, notes = ?, modified = ?,
+        WHERE org_id = ? AND id = ?
+            "#,
+        )
+        .bind(&formula.name)
+        .bind(&formula.number)
+        .bind(&formula.notes)
+        .bind(formula.modified)
+        .bind(&formula.org_id)
+        .bind(&formula.id)
+        .execute(&mut tx)
+        .await
+        .unwrap();
+
+        // Erase all connected formula bases so we can reattach them
+        sqlx::query(
+            r#"
+        DELETE FROM formulas_bases
+        WHERE org_id = ? AND formula_id = ?
+            "#,
+        )
+        .bind(&formula.org_id)
+        .bind(&formula.id)
+        .execute(&mut tx)
+        .await
+        .unwrap();
+
+        // Erase all connected formula colorants so we can reattach them
+        sqlx::query(
+            r#"
+        DELETE FROM formulas_colorants
+        WHERE org_id = ? AND formula_id = ?
+            "#,
+        )
+        .bind(&formula.org_id)
+        .bind(&formula.id)
+        .execute(&mut tx)
+        .await
+        .unwrap();
+
+        for base in &formula.bases {
+            sqlx::query(
+                r#"
+            INSERT INTO formulas_bases (formula_id, base_id, org_id, amount)
+            VALUES (?, ?, ?, ?)
+            "#,
+            )
+            .bind(&formula.id)
+            .bind(&base.base_id)
+            .bind(&formula.org_id)
+            .bind(&base.amount)
+            .execute(&mut tx)
+            .await
+            .unwrap();
+        }
+
+        for colorant in &formula.colorants {
+            sqlx::query(
+                r#"
+            INSERT INTO formulas_colorants (formula_id, colorant_id, org_id, amount)
+            VALUES (?, ?, ?, ?)
+            "#,
+            )
+            .bind(&formula.id)
+            .bind(&colorant.colorant_id)
+            .bind(&formula.org_id)
+            .bind(&colorant.amount)
+            .execute(&mut tx)
+            .await
+            .unwrap();
+        }
+
+        tx.commit().await.unwrap();
     }
 
     pub async fn get_formula(&self, org: &str, id: &str) -> Formula {
@@ -114,8 +234,8 @@ impl Db {
             name: row.get("name"),
             number: row.get("number"),
             notes: row.get("notes"),
-            bases: None,
-            colorants: None,
+            bases: vec![],
+            colorants: vec![],
             created: row.get("created"),
             modified: row.get("modified"),
             org_id: row.get("org_id"),
@@ -153,11 +273,11 @@ impl Db {
             .unwrap();
 
         if !bases.is_empty() {
-            formula.bases = Some(bases);
+            formula.bases = bases;
         };
 
         if !colorants.is_empty() {
-            formula.colorants = Some(colorants);
+            formula.colorants = colorants;
         };
 
         tx.commit().await.unwrap();

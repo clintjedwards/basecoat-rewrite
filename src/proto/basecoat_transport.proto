@@ -59,8 +59,25 @@ message DescribeFormulaResponse { Formula Formula = 1; }
 message CreateFormulaRequest {
   string org_id = 1;
   string name = 2;
+  string number = 3;
+  string notes = 4;
+  // IDs for bases to attach to formula;
+  repeated FormulaBaseEntry bases = 5;
+  // IDs for colorants to attach to formula;
+  repeated FormulaColorantEntry colorants = 6;
 }
 message CreateFormulaResponse {}
+message UpdateFormulaRequest {
+  string id = 1;
+  string org_id = 2;
+  string name = 3;
+  string number = 4;
+  string notes = 5;
+  repeated FormulaBaseEntry bases = 6; // IDs for bases to attach to formula;
+  // IDs for colorants to attach to formula;
+  repeated FormulaColorantEntry colorants = 7;
+}
+message UpdateFormulaResponse {}
 message DeleteFormulaRequest {
   string org_id = 1;
   string id = 2;

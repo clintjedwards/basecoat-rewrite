@@ -1,7 +1,8 @@
 use crate::conf;
 use crate::proto::basecoat_client::BasecoatClient;
 use crate::proto::{
-    CreateFormulaRequest, DeleteFormulaRequest, DescribeFormulaRequest, ListFormulasRequest,
+    CreateFormulaRequest, DeleteFormulaRequest, DescribeFormulaRequest, FormulaBaseEntry,
+    FormulaColorantEntry, ListFormulasRequest,
 };
 use clap::{Args, Subcommand};
 use std::error::Error;
@@ -26,6 +27,14 @@ pub enum FormulaCommands {
         org_id: String,
         /// Full name of formula.
         name: String,
+        /// Optional associated number for formula.
+        number: Option<String>,
+        /// Small notes about the formula.
+        notes: Option<String>,
+        /// List of base ids you want to attach to the formula.
+        bases: Vec<String>,
+        /// List of colorants ids you want to attach to the formula.
+        colorants: Vec<String>,
     },
 
     /// Get details about a specific formula.
@@ -57,14 +66,44 @@ pub async fn create(
     config: conf::cli::Config,
     org_id: &str,
     name: &str,
+    number: Option<String>,
+    notes: Option<String>,
+    bases: Vec<String>,
+    colorants: Vec<String>,
 ) -> Result<(), Box<dyn Error>> {
     let channel = tonic::transport::Channel::from_shared(config.server.to_string())?;
     let conn = channel.connect().await?;
+
+    let parsed_bases = bases
+        .into_iter()
+        .map(|base| {
+            let base_info: Vec<&str> = base.split(':').collect();
+            FormulaBaseEntry {
+                base_id: base_info[0].to_string(),
+                amount: base_info[1].to_string(),
+            }
+        })
+        .collect();
+
+    let parsed_colorants = colorants
+        .into_iter()
+        .map(|colorant| {
+            let colorant_info: Vec<&str> = colorant.split(':').collect();
+            FormulaColorantEntry {
+                colorant_id: colorant_info[0].to_string(),
+                amount: colorant_info[1].to_string(),
+            }
+        })
+        .collect();
 
     let mut client = BasecoatClient::new(conn);
     let request = tonic::Request::new(CreateFormulaRequest {
         org_id: org_id.to_string(),
         name: name.to_string(),
+        number: number.unwrap_or_default(),
+        notes: notes.unwrap_or_default(),
+        bases: parsed_bases,
+        colorants: parsed_colorants,
     });
     client.create_formula(request).await?;
     Ok(())

@@ -137,8 +137,17 @@ pub async fn init() {
         Commands::Formula(formula) => {
             let formula_cmds = formula.command;
             match formula_cmds {
-                formula::FormulaCommands::Create { org_id, name } => {
-                    formula::create(config, &org_id, &name).await.unwrap();
+                formula::FormulaCommands::Create {
+                    org_id,
+                    name,
+                    number,
+                    notes,
+                    bases,
+                    colorants,
+                } => {
+                    formula::create(config, &org_id, &name, number, notes, bases, colorants)
+                        .await
+                        .unwrap();
                 }
                 formula::FormulaCommands::List { org_id } => {
                     formula::list(config, &org_id).await.unwrap();

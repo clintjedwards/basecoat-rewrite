@@ -78,6 +78,8 @@ pub struct Colorant {
     pub modified: i64,
     #[prost(string, tag="6")]
     pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="7")]
+    pub amount: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Base {
@@ -95,6 +97,23 @@ pub struct Base {
     pub modified: i64,
     #[prost(string, tag="6")]
     pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="7")]
+    pub amount: ::prost::alloc::string::String,
+}
+/// a reference to a colorant and an amount
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct FormulaColorantEntry {
+    #[prost(string, tag="1")]
+    pub colorant_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub amount: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct FormulaBaseEntry {
+    #[prost(string, tag="1")]
+    pub base_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub amount: ::prost::alloc::string::String,
 }
 /// Service
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -224,9 +243,41 @@ pub struct CreateFormulaRequest {
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub number: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub notes: ::prost::alloc::string::String,
+    /// IDs for bases to attach to formula;
+    #[prost(message, repeated, tag="5")]
+    pub bases: ::prost::alloc::vec::Vec<FormulaBaseEntry>,
+    /// IDs for colorants to attach to formula;
+    #[prost(message, repeated, tag="6")]
+    pub colorants: ::prost::alloc::vec::Vec<FormulaColorantEntry>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateFormulaResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateFormulaRequest {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub number: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub notes: ::prost::alloc::string::String,
+    /// IDs for bases to attach to formula;
+    #[prost(message, repeated, tag="6")]
+    pub bases: ::prost::alloc::vec::Vec<FormulaBaseEntry>,
+    /// IDs for colorants to attach to formula;
+    #[prost(message, repeated, tag="7")]
+    pub colorants: ::prost::alloc::vec::Vec<FormulaColorantEntry>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateFormulaResponse {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteFormulaRequest {
@@ -601,6 +652,25 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn update_formula(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateFormulaRequest>,
+        ) -> Result<tonic::Response<super::UpdateFormulaResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/UpdateFormula",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         pub async fn create_formula(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateFormulaRequest>,
@@ -848,6 +918,10 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::DescribeFormulaRequest>,
         ) -> Result<tonic::Response<super::DescribeFormulaResponse>, tonic::Status>;
+        async fn update_formula(
+            &self,
+            request: tonic::Request<super::UpdateFormulaRequest>,
+        ) -> Result<tonic::Response<super::UpdateFormulaResponse>, tonic::Status>;
         async fn create_formula(
             &self,
             request: tonic::Request<super::CreateFormulaRequest>,
@@ -1363,6 +1437,46 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = DescribeFormulaSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/UpdateFormula" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateFormulaSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::UpdateFormulaRequest>
+                    for UpdateFormulaSvc<T> {
+                        type Response = super::UpdateFormulaResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateFormulaRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).update_formula(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UpdateFormulaSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

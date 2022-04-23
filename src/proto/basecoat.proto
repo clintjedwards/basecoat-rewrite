@@ -29,6 +29,7 @@ service Basecoat {
   // Formula routes
   rpc ListFormulas(ListFormulasRequest) returns (ListFormulasResponse);
   rpc DescribeFormula(DescribeFormulaRequest) returns (DescribeFormulaResponse);
+  rpc UpdateFormula(UpdateFormulaRequest) returns (UpdateFormulaResponse);
   rpc CreateFormula(CreateFormulaRequest) returns (CreateFormulaResponse);
   rpc DeleteFormula(DeleteFormulaRequest) returns (DeleteFormulaResponse);
 

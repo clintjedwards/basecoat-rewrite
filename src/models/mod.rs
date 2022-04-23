@@ -1,3 +1,4 @@
+use crate::proto::{self, FormulaBaseEntry, FormulaColorantEntry};
 use bcrypt::{hash, DEFAULT_COST};
 use nanoid::nanoid;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -77,8 +78,8 @@ pub struct Formula {
     pub name: String,
     pub number: Option<String>,
     pub notes: Option<String>,
-    pub bases: Option<Vec<Base>>,
-    pub colorants: Option<Vec<Colorant>>,
+    pub bases: Vec<Base>,
+    pub colorants: Vec<Colorant>,
     pub created: i64,
     pub modified: i64,
     pub org_id: String,
@@ -96,11 +97,68 @@ impl Formula {
             name: name.to_string(),
             number: None,
             notes: None,
-            bases: None,
-            colorants: None,
+            bases: vec![],
+            colorants: vec![],
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),
+        }
+    }
+}
+
+// NewFormula is an intermediate data structure that collects information about a formula
+// and associated colorants/bases to eventually be formed in the database.
+#[derive(Default, Debug, Clone)]
+pub struct NewFormula {
+    pub id: String,
+    pub name: String,
+    pub number: Option<String>,
+    pub notes: Option<String>,
+    pub bases: Vec<FormulaBaseEntry>,
+    pub colorants: Vec<FormulaColorantEntry>,
+    pub created: i64,
+    pub modified: i64,
+    pub org_id: String,
+}
+
+impl From<proto::CreateFormulaRequest> for NewFormula {
+    fn from(formula: proto::CreateFormulaRequest) -> Self {
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+
+        NewFormula {
+            id: nanoid!(10),
+            name: formula.name,
+            number: Some(formula.number),
+            notes: Some(formula.notes),
+            bases: formula.bases,
+            colorants: formula.colorants,
+            created: epoch,
+            modified: epoch,
+            org_id: formula.org_id,
+        }
+    }
+}
+
+impl From<proto::UpdateFormulaRequest> for NewFormula {
+    fn from(formula: proto::UpdateFormulaRequest) -> Self {
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+
+        NewFormula {
+            id: nanoid!(10),
+            name: formula.name,
+            number: Some(formula.number),
+            notes: Some(formula.notes),
+            bases: formula.bases,
+            colorants: formula.colorants,
+            created: epoch,
+            modified: epoch,
+            org_id: formula.org_id,
         }
     }
 }
@@ -113,6 +171,7 @@ pub struct Base {
     pub created: i64,
     pub modified: i64,
     pub org_id: String,
+    pub amount: Option<String>,
 }
 
 impl Base {
@@ -129,6 +188,7 @@ impl Base {
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),
+            amount: None,
         }
     }
 }
@@ -141,6 +201,7 @@ pub struct Colorant {
     pub created: i64,
     pub modified: i64,
     pub org_id: String,
+    pub amount: Option<String>,
 }
 
 impl Colorant {
@@ -157,6 +218,7 @@ impl Colorant {
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),
+            amount: None,
         }
     }
 }
