@@ -164,8 +164,14 @@ pub async fn init() {
         Commands::Colorant(colorant) => {
             let colorant_cmds = colorant.command;
             match colorant_cmds {
-                colorant::ColorantCommands::Create { org_id, name } => {
-                    colorant::create(config, &org_id, &name).await.unwrap();
+                colorant::ColorantCommands::Create {
+                    org_id,
+                    name,
+                    manufacturer,
+                } => {
+                    colorant::create(config, &org_id, &name, manufacturer)
+                        .await
+                        .unwrap();
                 }
                 colorant::ColorantCommands::List { org_id } => {
                     colorant::list(config, &org_id).await.unwrap();
@@ -182,8 +188,14 @@ pub async fn init() {
         Commands::Base(base) => {
             let base_cmds = base.command;
             match base_cmds {
-                base::BaseCommands::Create { org_id, name } => {
-                    base::create(config, &org_id, &name).await.unwrap();
+                base::BaseCommands::Create {
+                    org_id,
+                    name,
+                    manufacturer,
+                } => {
+                    base::create(config, &org_id, &name, manufacturer)
+                        .await
+                        .unwrap();
                 }
                 base::BaseCommands::List { org_id } => {
                     base::list(config, &org_id).await.unwrap();

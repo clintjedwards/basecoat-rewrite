@@ -100,20 +100,45 @@ pub struct Base {
     #[prost(string, tag="7")]
     pub amount: ::prost::alloc::string::String,
 }
-/// a reference to a colorant and an amount
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct FormulaColorantEntry {
+pub struct Contractor {
     #[prost(string, tag="1")]
-    pub colorant_id: ::prost::alloc::string::String,
+    pub id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
-    pub amount: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub contact: ::prost::alloc::string::String,
+    /// Time created in epoch
+    #[prost(int64, tag="4")]
+    pub created: i64,
+    /// Time modified in epoch
+    #[prost(int64, tag="5")]
+    pub modified: i64,
+    #[prost(string, tag="6")]
+    pub org_id: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct FormulaBaseEntry {
+pub struct Job {
     #[prost(string, tag="1")]
-    pub base_id: ::prost::alloc::string::String,
+    pub id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
-    pub amount: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub contact: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub notes: ::prost::alloc::string::String,
+    /// Time created in epoch
+    #[prost(int64, tag="6")]
+    pub created: i64,
+    /// Time modified in epoch
+    #[prost(int64, tag="7")]
+    pub modified: i64,
+    #[prost(string, tag="8")]
+    pub contractor_id: ::prost::alloc::string::String,
+    #[prost(string, tag="9")]
+    pub org_id: ::prost::alloc::string::String,
 }
 /// Service
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -249,10 +274,10 @@ pub struct CreateFormulaRequest {
     pub notes: ::prost::alloc::string::String,
     /// IDs for bases to attach to formula;
     #[prost(message, repeated, tag="5")]
-    pub bases: ::prost::alloc::vec::Vec<FormulaBaseEntry>,
+    pub bases: ::prost::alloc::vec::Vec<Base>,
     /// IDs for colorants to attach to formula;
     #[prost(message, repeated, tag="6")]
-    pub colorants: ::prost::alloc::vec::Vec<FormulaColorantEntry>,
+    pub colorants: ::prost::alloc::vec::Vec<Colorant>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateFormulaResponse {
@@ -271,10 +296,10 @@ pub struct UpdateFormulaRequest {
     pub notes: ::prost::alloc::string::String,
     /// IDs for bases to attach to formula;
     #[prost(message, repeated, tag="6")]
-    pub bases: ::prost::alloc::vec::Vec<FormulaBaseEntry>,
+    pub bases: ::prost::alloc::vec::Vec<Base>,
     /// IDs for colorants to attach to formula;
     #[prost(message, repeated, tag="7")]
-    pub colorants: ::prost::alloc::vec::Vec<FormulaColorantEntry>,
+    pub colorants: ::prost::alloc::vec::Vec<Colorant>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateFormulaResponse {
@@ -288,6 +313,30 @@ pub struct DeleteFormulaRequest {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteFormulaResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AttachFormulaToJobRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub formula_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub job_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AttachFormulaToJobResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DetachFormulaFromJobRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub formula_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub job_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DetachFormulaFromJobResponse {
 }
 /// Colorant
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -318,6 +367,8 @@ pub struct CreateColorantRequest {
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub manufacturer: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateColorantResponse {
@@ -361,6 +412,8 @@ pub struct CreateBaseRequest {
     pub org_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub manufacturer: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateBaseResponse {
@@ -374,6 +427,142 @@ pub struct DeleteBaseRequest {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteBaseResponse {
+}
+/// Contractor
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListContractorsRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListContractorsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub contractors: ::prost::alloc::vec::Vec<Contractor>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeContractorRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeContractorResponse {
+    #[prost(message, optional, tag="1")]
+    pub contractor: ::core::option::Option<Contractor>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateContractorRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub contact: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateContractorResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateContractorRequest {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub contact: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateContractorResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteContractorRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteContractorResponse {
+}
+/// Job
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListJobsRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub contractor_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListJobsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub jobs: ::prost::alloc::vec::Vec<Job>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeJobRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub contractor_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DescribeJobResponse {
+    #[prost(message, optional, tag="1")]
+    pub job: ::core::option::Option<Job>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateJobRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub contractor_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub contact: ::prost::alloc::string::String,
+    #[prost(string, tag="6")]
+    pub notes: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateJobResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateJobRequest {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub contractor_id: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(string, tag="6")]
+    pub contact: ::prost::alloc::string::String,
+    #[prost(string, tag="7")]
+    pub notes: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateJobResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteJobRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub contractor_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteJobResponse {
 }
 /// Generated client implementations.
 pub mod basecoat_client {
@@ -709,6 +898,47 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        pub async fn attach_formula_to_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::AttachFormulaToJobRequest>,
+        ) -> Result<tonic::Response<super::AttachFormulaToJobResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/AttachFormulaToJob",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn detach_formula_from_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DetachFormulaFromJobRequest>,
+        ) -> Result<
+                tonic::Response<super::DetachFormulaFromJobResponse>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DetachFormulaFromJob",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
         /// Colorant routes
         pub async fn list_colorants(
             &mut self,
@@ -861,6 +1091,190 @@ pub mod basecoat_client {
             );
             self.inner.unary(request.into_request(), path, codec).await
         }
+        /// Contractor routes
+        pub async fn list_contractors(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListContractorsRequest>,
+        ) -> Result<tonic::Response<super::ListContractorsResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/ListContractors",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_contractor(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeContractorRequest>,
+        ) -> Result<tonic::Response<super::DescribeContractorResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeContractor",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn update_contractor(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateContractorRequest>,
+        ) -> Result<tonic::Response<super::UpdateContractorResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/UpdateContractor",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_contractor(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateContractorRequest>,
+        ) -> Result<tonic::Response<super::CreateContractorResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/CreateContractor",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn delete_contractor(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteContractorRequest>,
+        ) -> Result<tonic::Response<super::DeleteContractorResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DeleteContractor",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Job routes
+        pub async fn list_jobs(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListJobsRequest>,
+        ) -> Result<tonic::Response<super::ListJobsResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/ListJobs");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn describe_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DescribeJobRequest>,
+        ) -> Result<tonic::Response<super::DescribeJobResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/proto.Basecoat/DescribeJob",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn update_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateJobRequest>,
+        ) -> Result<tonic::Response<super::UpdateJobResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/UpdateJob");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn create_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateJobRequest>,
+        ) -> Result<tonic::Response<super::CreateJobResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/CreateJob");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn delete_job(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteJobRequest>,
+        ) -> Result<tonic::Response<super::DeleteJobResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/DeleteJob");
+            self.inner.unary(request.into_request(), path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -930,6 +1344,14 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::DeleteFormulaRequest>,
         ) -> Result<tonic::Response<super::DeleteFormulaResponse>, tonic::Status>;
+        async fn attach_formula_to_job(
+            &self,
+            request: tonic::Request<super::AttachFormulaToJobRequest>,
+        ) -> Result<tonic::Response<super::AttachFormulaToJobResponse>, tonic::Status>;
+        async fn detach_formula_from_job(
+            &self,
+            request: tonic::Request<super::DetachFormulaFromJobRequest>,
+        ) -> Result<tonic::Response<super::DetachFormulaFromJobResponse>, tonic::Status>;
         /// Colorant routes
         async fn list_colorants(
             &self,
@@ -964,6 +1386,48 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::DeleteBaseRequest>,
         ) -> Result<tonic::Response<super::DeleteBaseResponse>, tonic::Status>;
+        /// Contractor routes
+        async fn list_contractors(
+            &self,
+            request: tonic::Request<super::ListContractorsRequest>,
+        ) -> Result<tonic::Response<super::ListContractorsResponse>, tonic::Status>;
+        async fn describe_contractor(
+            &self,
+            request: tonic::Request<super::DescribeContractorRequest>,
+        ) -> Result<tonic::Response<super::DescribeContractorResponse>, tonic::Status>;
+        async fn update_contractor(
+            &self,
+            request: tonic::Request<super::UpdateContractorRequest>,
+        ) -> Result<tonic::Response<super::UpdateContractorResponse>, tonic::Status>;
+        async fn create_contractor(
+            &self,
+            request: tonic::Request<super::CreateContractorRequest>,
+        ) -> Result<tonic::Response<super::CreateContractorResponse>, tonic::Status>;
+        async fn delete_contractor(
+            &self,
+            request: tonic::Request<super::DeleteContractorRequest>,
+        ) -> Result<tonic::Response<super::DeleteContractorResponse>, tonic::Status>;
+        /// Job routes
+        async fn list_jobs(
+            &self,
+            request: tonic::Request<super::ListJobsRequest>,
+        ) -> Result<tonic::Response<super::ListJobsResponse>, tonic::Status>;
+        async fn describe_job(
+            &self,
+            request: tonic::Request<super::DescribeJobRequest>,
+        ) -> Result<tonic::Response<super::DescribeJobResponse>, tonic::Status>;
+        async fn update_job(
+            &self,
+            request: tonic::Request<super::UpdateJobRequest>,
+        ) -> Result<tonic::Response<super::UpdateJobResponse>, tonic::Status>;
+        async fn create_job(
+            &self,
+            request: tonic::Request<super::CreateJobRequest>,
+        ) -> Result<tonic::Response<super::CreateJobResponse>, tonic::Status>;
+        async fn delete_job(
+            &self,
+            request: tonic::Request<super::DeleteJobRequest>,
+        ) -> Result<tonic::Response<super::DeleteJobResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct BasecoatServer<T: Basecoat> {
@@ -1568,6 +2032,86 @@ pub mod basecoat_server {
                     };
                     Box::pin(fut)
                 }
+                "/proto.Basecoat/AttachFormulaToJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct AttachFormulaToJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::AttachFormulaToJobRequest>
+                    for AttachFormulaToJobSvc<T> {
+                        type Response = super::AttachFormulaToJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::AttachFormulaToJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).attach_formula_to_job(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = AttachFormulaToJobSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DetachFormulaFromJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct DetachFormulaFromJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DetachFormulaFromJobRequest>
+                    for DetachFormulaFromJobSvc<T> {
+                        type Response = super::DetachFormulaFromJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DetachFormulaFromJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).detach_formula_from_job(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DetachFormulaFromJobSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
                 "/proto.Basecoat/ListColorants" => {
                     #[allow(non_camel_case_types)]
                     struct ListColorantsSvc<T: Basecoat>(pub Arc<T>);
@@ -1871,6 +2415,396 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = DeleteBaseSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListContractors" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListContractorsSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::ListContractorsRequest>
+                    for ListContractorsSvc<T> {
+                        type Response = super::ListContractorsResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListContractorsRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_contractors(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListContractorsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeContractor" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeContractorSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeContractorRequest>
+                    for DescribeContractorSvc<T> {
+                        type Response = super::DescribeContractorResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeContractorRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_contractor(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeContractorSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/UpdateContractor" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateContractorSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::UpdateContractorRequest>
+                    for UpdateContractorSvc<T> {
+                        type Response = super::UpdateContractorResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateContractorRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).update_contractor(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UpdateContractorSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateContractor" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateContractorSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateContractorRequest>
+                    for CreateContractorSvc<T> {
+                        type Response = super::CreateContractorResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateContractorRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).create_contractor(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateContractorSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DeleteContractor" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteContractorSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DeleteContractorRequest>
+                    for DeleteContractorSvc<T> {
+                        type Response = super::DeleteContractorResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteContractorRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).delete_contractor(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteContractorSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/ListJobs" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListJobsSvc<T: Basecoat>(pub Arc<T>);
+                    impl<T: Basecoat> tonic::server::UnaryService<super::ListJobsRequest>
+                    for ListJobsSvc<T> {
+                        type Response = super::ListJobsResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListJobsRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).list_jobs(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListJobsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DescribeJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct DescribeJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DescribeJobRequest>
+                    for DescribeJobSvc<T> {
+                        type Response = super::DescribeJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DescribeJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).describe_job(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DescribeJobSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/UpdateJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::UpdateJobRequest>
+                    for UpdateJobSvc<T> {
+                        type Response = super::UpdateJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).update_job(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UpdateJobSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/CreateJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::CreateJobRequest>
+                    for CreateJobSvc<T> {
+                        type Response = super::CreateJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).create_job(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateJobSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/DeleteJob" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteJobSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::DeleteJobRequest>
+                    for DeleteJobSvc<T> {
+                        type Response = super::DeleteJobResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteJobRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).delete_job(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteJobSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

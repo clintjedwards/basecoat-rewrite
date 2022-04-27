@@ -74,3 +74,32 @@ impl From<models::Colorant> for proto::Colorant {
         }
     }
 }
+
+impl From<models::Contractor> for proto::Contractor {
+    fn from(contractor: models::Contractor) -> Self {
+        proto::Contractor {
+            id: contractor.id,
+            name: contractor.name,
+            contact: contractor.contact.unwrap_or_default(),
+            created: contractor.created,
+            modified: contractor.modified,
+            org_id: contractor.org_id,
+        }
+    }
+}
+
+impl From<models::Job> for proto::Job {
+    fn from(job: models::Job) -> Self {
+        proto::Job {
+            id: job.id,
+            name: job.name,
+            address: job.address.unwrap_or_default(),
+            contact: job.contact.unwrap_or_default(),
+            notes: job.notes.unwrap_or_default(),
+            created: job.created,
+            modified: job.modified,
+            contractor_id: job.contractor_id,
+            org_id: job.org_id,
+        }
+    }
+}

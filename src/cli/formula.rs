@@ -1,8 +1,8 @@
 use crate::conf;
 use crate::proto::basecoat_client::BasecoatClient;
 use crate::proto::{
-    CreateFormulaRequest, DeleteFormulaRequest, DescribeFormulaRequest, FormulaBaseEntry,
-    FormulaColorantEntry, ListFormulasRequest,
+    Base, Colorant, CreateFormulaRequest, DeleteFormulaRequest, DescribeFormulaRequest,
+    ListFormulasRequest,
 };
 use clap::{Args, Subcommand};
 use std::error::Error;
@@ -78,9 +78,14 @@ pub async fn create(
         .into_iter()
         .map(|base| {
             let base_info: Vec<&str> = base.split(':').collect();
-            FormulaBaseEntry {
-                base_id: base_info[0].to_string(),
+            Base {
+                id: base_info[0].to_string(),
+                name: "".to_string(),
                 amount: base_info[1].to_string(),
+                manufacturer: "".to_string(),
+                created: 0,
+                modified: 0,
+                org_id: "".to_string(),
             }
         })
         .collect();
@@ -89,9 +94,14 @@ pub async fn create(
         .into_iter()
         .map(|colorant| {
             let colorant_info: Vec<&str> = colorant.split(':').collect();
-            FormulaColorantEntry {
-                colorant_id: colorant_info[0].to_string(),
+            Colorant {
+                id: colorant_info[0].to_string(),
+                name: "".to_string(),
                 amount: colorant_info[1].to_string(),
+                manufacturer: "".to_string(),
+                created: 0,
+                modified: 0,
+                org_id: "".to_string(),
             }
         })
         .collect();

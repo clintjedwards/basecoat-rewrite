@@ -1,8 +1,11 @@
 pub mod bases;
 pub mod colorants;
+pub mod contractors;
 pub mod formulas;
+pub mod jobs;
 pub mod organizations;
 pub mod users;
+
 use sqlx::{migrate, Pool, Sqlite, SqlitePool};
 use std::error::Error;
 use std::fs::File;

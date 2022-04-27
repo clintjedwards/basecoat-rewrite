@@ -32,6 +32,10 @@ service Basecoat {
   rpc UpdateFormula(UpdateFormulaRequest) returns (UpdateFormulaResponse);
   rpc CreateFormula(CreateFormulaRequest) returns (CreateFormulaResponse);
   rpc DeleteFormula(DeleteFormulaRequest) returns (DeleteFormulaResponse);
+  rpc AttachFormulaToJob(AttachFormulaToJobRequest)
+      returns (AttachFormulaToJobResponse);
+  rpc DetachFormulaFromJob(DetachFormulaFromJobRequest)
+      returns (DetachFormulaFromJobResponse);
 
   // Colorant routes
   rpc ListColorants(ListColorantsRequest) returns (ListColorantsResponse);
@@ -45,4 +49,22 @@ service Basecoat {
   rpc DescribeBase(DescribeBaseRequest) returns (DescribeBaseResponse);
   rpc CreateBase(CreateBaseRequest) returns (CreateBaseResponse);
   rpc DeleteBase(DeleteBaseRequest) returns (DeleteBaseResponse);
+
+  // Contractor routes
+  rpc ListContractors(ListContractorsRequest) returns (ListContractorsResponse);
+  rpc DescribeContractor(DescribeContractorRequest)
+      returns (DescribeContractorResponse);
+  rpc UpdateContractor(UpdateContractorRequest)
+      returns (UpdateContractorResponse);
+  rpc CreateContractor(CreateContractorRequest)
+      returns (CreateContractorResponse);
+  rpc DeleteContractor(DeleteContractorRequest)
+      returns (DeleteContractorResponse);
+
+  // Job routes
+  rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
+  rpc DescribeJob(DescribeJobRequest) returns (DescribeJobResponse);
+  rpc UpdateJob(UpdateJobRequest) returns (UpdateJobResponse);
+  rpc CreateJob(CreateJobRequest) returns (CreateJobResponse);
+  rpc DeleteJob(DeleteJobRequest) returns (DeleteJobResponse);
 }

@@ -1,5 +1,5 @@
 use crate::conf;
-use crate::models::{Base, Colorant, NewFormula, Organization, User};
+use crate::models::{Base, Colorant, Contractor, Formula, Job, Organization, User};
 use crate::proto;
 use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
 use crate::proto::*;
@@ -155,7 +155,7 @@ impl Basecoat for Api {
     ) -> Result<Response<CreateFormulaResponse>, Status> {
         let args = &request.into_inner();
 
-        let new_formula: NewFormula = args.to_owned().into();
+        let new_formula: Formula = args.to_owned().into();
 
         self.storage.create_formula(&new_formula).await;
 
@@ -169,7 +169,7 @@ impl Basecoat for Api {
     ) -> Result<Response<UpdateFormulaResponse>, Status> {
         let args = &request.into_inner();
 
-        let new_formula: NewFormula = args.to_owned().into();
+        let new_formula: Formula = args.to_owned().into();
 
         self.storage.update_formula(&new_formula).await;
 
@@ -227,7 +227,7 @@ impl Basecoat for Api {
     ) -> Result<Response<CreateColorantResponse>, Status> {
         let args = &request.into_inner();
 
-        let colorant = Colorant::new(&args.org_id, &args.name);
+        let colorant = Colorant::new(&args.org_id, &args.name, Some(args.manufacturer.clone()));
 
         self.storage.create_colorant(&colorant).await;
 
@@ -279,7 +279,7 @@ impl Basecoat for Api {
     ) -> Result<Response<CreateBaseResponse>, Status> {
         let args = &request.into_inner();
 
-        let base = Base::new(&args.org_id, &args.name);
+        let base = Base::new(&args.org_id, &args.name, Some(args.manufacturer.clone()));
 
         self.storage.create_base(&base).await;
 
@@ -307,6 +307,192 @@ impl Basecoat for Api {
         self.storage.delete_base(&args.org_id, &args.id).await;
 
         Ok(Response::new(DeleteBaseResponse {}))
+    }
+
+    async fn list_contractors(
+        &self,
+        request: Request<ListContractorsRequest>,
+    ) -> Result<Response<ListContractorsResponse>, Status> {
+        let contractors_raw = self
+            .storage
+            .list_contractors(&request.into_inner().org_id)
+            .await;
+        let contractors = contractors_raw
+            .into_iter()
+            .map(proto::Contractor::from)
+            .collect();
+
+        Ok(Response::new(ListContractorsResponse { contractors }))
+    }
+
+    async fn create_contractor(
+        &self,
+        request: Request<CreateContractorRequest>,
+    ) -> Result<Response<CreateContractorResponse>, Status> {
+        let args = &request.into_inner();
+
+        let new_contractor = Contractor::new(&args.org_id, &args.name, Some(args.contact.clone()));
+
+        self.storage.create_contractor(&new_contractor).await;
+
+        info!("Created new contractor"; "contractor" => format!("{:?}",new_contractor));
+        Ok(Response::new(CreateContractorResponse {}))
+    }
+
+    async fn update_contractor(
+        &self,
+        request: Request<UpdateContractorRequest>,
+    ) -> Result<Response<UpdateContractorResponse>, Status> {
+        let args = &request.into_inner();
+
+        let mut updated_contractor =
+            Contractor::new(&args.org_id, &args.name, Some(args.contact.clone()));
+        updated_contractor.id = args.id.clone();
+
+        self.storage.update_contractor(&updated_contractor).await;
+
+        info!("Updated contractor"; "contractor" => format!("{:?}",updated_contractor));
+        Ok(Response::new(UpdateContractorResponse {}))
+    }
+
+    async fn describe_contractor(
+        &self,
+        request: Request<DescribeContractorRequest>,
+    ) -> Result<Response<DescribeContractorResponse>, Status> {
+        let args = &request.into_inner();
+
+        let contractor: proto::Contractor = self
+            .storage
+            .get_contractor(&args.org_id, &args.id)
+            .await
+            .into();
+
+        Ok(Response::new(DescribeContractorResponse {
+            contractor: Some(contractor),
+        }))
+    }
+
+    async fn delete_contractor(
+        &self,
+        request: Request<DeleteContractorRequest>,
+    ) -> Result<Response<DeleteContractorResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage.delete_contractor(&args.org_id, &args.id).await;
+
+        Ok(Response::new(DeleteContractorResponse {}))
+    }
+
+    async fn list_jobs(
+        &self,
+        request: Request<ListJobsRequest>,
+    ) -> Result<Response<ListJobsResponse>, Status> {
+        let args = &request.into_inner();
+
+        let jobs_raw = self
+            .storage
+            .list_jobs(&args.org_id, &args.contractor_id)
+            .await;
+        let jobs = jobs_raw.into_iter().map(proto::Job::from).collect();
+
+        Ok(Response::new(ListJobsResponse { jobs }))
+    }
+
+    async fn create_job(
+        &self,
+        request: Request<CreateJobRequest>,
+    ) -> Result<Response<CreateJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        let new_job = Job::new(
+            &args.org_id,
+            &args.name,
+            &args.contractor_id,
+            Some(args.contact.clone()),
+            Some(args.address.clone()),
+            Some(args.notes.clone()),
+        );
+
+        self.storage.create_job(&new_job).await;
+
+        info!("Created new job"; "job" => format!("{:?}",new_job));
+        Ok(Response::new(CreateJobResponse {}))
+    }
+
+    async fn update_job(
+        &self,
+        request: Request<UpdateJobRequest>,
+    ) -> Result<Response<UpdateJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        let mut updated_job = Job::new(
+            &args.org_id,
+            &args.name,
+            &args.contractor_id,
+            Some(args.contact.clone()),
+            Some(args.address.clone()),
+            Some(args.notes.clone()),
+        );
+        updated_job.id = args.id.clone();
+
+        self.storage.update_job(&updated_job).await;
+
+        info!("Updated job"; "job" => format!("{:?}",updated_job));
+        Ok(Response::new(UpdateJobResponse {}))
+    }
+
+    async fn describe_job(
+        &self,
+        request: Request<DescribeJobRequest>,
+    ) -> Result<Response<DescribeJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        let job: proto::Job = self
+            .storage
+            .get_job(&args.org_id, &args.id, &args.contractor_id)
+            .await
+            .into();
+
+        Ok(Response::new(DescribeJobResponse { job: Some(job) }))
+    }
+
+    async fn delete_job(
+        &self,
+        request: Request<DeleteJobRequest>,
+    ) -> Result<Response<DeleteJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage
+            .delete_job(&args.org_id, &args.id, &args.contractor_id)
+            .await;
+
+        Ok(Response::new(DeleteJobResponse {}))
+    }
+
+    async fn attach_formula_to_job(
+        &self,
+        request: Request<AttachFormulaToJobRequest>,
+    ) -> Result<Response<AttachFormulaToJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage
+            .attach_formula_to_job(&args.org_id, &args.formula_id, &args.job_id)
+            .await;
+
+        Ok(Response::new(AttachFormulaToJobResponse {}))
+    }
+
+    async fn detach_formula_from_job(
+        &self,
+        request: Request<DetachFormulaFromJobRequest>,
+    ) -> Result<Response<DetachFormulaFromJobResponse>, Status> {
+        let args = &request.into_inner();
+
+        self.storage
+            .detach_formula_from_job(&args.org_id, &args.formula_id, &args.job_id)
+            .await;
+
+        Ok(Response::new(DetachFormulaFromJobResponse {}))
     }
 }
 

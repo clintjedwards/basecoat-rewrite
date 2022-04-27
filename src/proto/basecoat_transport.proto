@@ -62,9 +62,9 @@ message CreateFormulaRequest {
   string number = 3;
   string notes = 4;
   // IDs for bases to attach to formula;
-  repeated FormulaBaseEntry bases = 5;
+  repeated Base bases = 5;
   // IDs for colorants to attach to formula;
-  repeated FormulaColorantEntry colorants = 6;
+  repeated Colorant colorants = 6;
 }
 message CreateFormulaResponse {}
 message UpdateFormulaRequest {
@@ -73,9 +73,9 @@ message UpdateFormulaRequest {
   string name = 3;
   string number = 4;
   string notes = 5;
-  repeated FormulaBaseEntry bases = 6; // IDs for bases to attach to formula;
+  repeated Base bases = 6; // IDs for bases to attach to formula;
   // IDs for colorants to attach to formula;
-  repeated FormulaColorantEntry colorants = 7;
+  repeated Colorant colorants = 7;
 }
 message UpdateFormulaResponse {}
 message DeleteFormulaRequest {
@@ -83,6 +83,20 @@ message DeleteFormulaRequest {
   string id = 2;
 }
 message DeleteFormulaResponse {}
+
+message AttachFormulaToJobRequest {
+  string org_id = 1;
+  string formula_id = 2;
+  string job_id = 3;
+}
+message AttachFormulaToJobResponse {}
+
+message DetachFormulaFromJobRequest {
+  string org_id = 1;
+  string formula_id = 2;
+  string job_id = 3;
+}
+message DetachFormulaFromJobResponse {}
 
 // Colorant
 message ListColorantsRequest { string org_id = 1; }
@@ -95,6 +109,7 @@ message DescribeColorantResponse { Colorant Colorant = 1; }
 message CreateColorantRequest {
   string org_id = 1;
   string name = 2;
+  string manufacturer = 3;
 }
 message CreateColorantResponse {}
 message DeleteColorantRequest {
@@ -114,6 +129,7 @@ message DescribeBaseResponse { Base Base = 1; }
 message CreateBaseRequest {
   string org_id = 1;
   string name = 2;
+  string manufacturer = 3;
 }
 message CreateBaseResponse {}
 message DeleteBaseRequest {
@@ -121,3 +137,68 @@ message DeleteBaseRequest {
   string id = 2;
 }
 message DeleteBaseResponse {}
+
+// Contractor
+message ListContractorsRequest { string org_id = 1; }
+message ListContractorsResponse { repeated Contractor Contractors = 1; }
+message DescribeContractorRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message DescribeContractorResponse { Contractor Contractor = 1; }
+message CreateContractorRequest {
+  string org_id = 1;
+  string name = 2;
+  string contact = 3;
+}
+message CreateContractorResponse {}
+message UpdateContractorRequest {
+  string id = 1;
+  string org_id = 2;
+  string name = 3;
+  string contact = 4;
+}
+message UpdateContractorResponse {}
+message DeleteContractorRequest {
+  string org_id = 1;
+  string id = 2;
+}
+message DeleteContractorResponse {}
+
+// Job
+message ListJobsRequest {
+  string org_id = 1;
+  string contractor_id = 2;
+}
+message ListJobsResponse { repeated Job Jobs = 1; }
+message DescribeJobRequest {
+  string org_id = 1;
+  string id = 2;
+  string contractor_id = 3;
+}
+message DescribeJobResponse { Job Job = 1; }
+message CreateJobRequest {
+  string org_id = 1;
+  string contractor_id = 2;
+  string name = 3;
+  string address = 4;
+  string contact = 5;
+  string notes = 6;
+}
+message CreateJobResponse {}
+message UpdateJobRequest {
+  string id = 1;
+  string org_id = 2;
+  string contractor_id = 3;
+  string name = 4;
+  string address = 5;
+  string contact = 6;
+  string notes = 7;
+}
+message UpdateJobResponse {}
+message DeleteJobRequest {
+  string org_id = 1;
+  string id = 2;
+  string contractor_id = 3;
+}
+message DeleteJobResponse {}

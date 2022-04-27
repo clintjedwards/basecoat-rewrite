@@ -1,4 +1,4 @@
-use crate::proto::{self, FormulaBaseEntry, FormulaColorantEntry};
+use crate::proto;
 use bcrypt::{hash, DEFAULT_COST};
 use nanoid::nanoid;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -106,60 +106,30 @@ impl Formula {
     }
 }
 
-// NewFormula is an intermediate data structure that collects information about a formula
-// and associated colorants/bases to eventually be formed in the database.
-#[derive(Default, Debug, Clone)]
-pub struct NewFormula {
-    pub id: String,
-    pub name: String,
-    pub number: Option<String>,
-    pub notes: Option<String>,
-    pub bases: Vec<FormulaBaseEntry>,
-    pub colorants: Vec<FormulaColorantEntry>,
-    pub created: i64,
-    pub modified: i64,
-    pub org_id: String,
-}
-
-impl From<proto::CreateFormulaRequest> for NewFormula {
+impl From<proto::CreateFormulaRequest> for Formula {
     fn from(formula: proto::CreateFormulaRequest) -> Self {
-        let epoch = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs() as i64;
+        let mut new_formula = Formula::new(&formula.org_id, &formula.name);
 
-        NewFormula {
-            id: nanoid!(10),
-            name: formula.name,
-            number: Some(formula.number),
-            notes: Some(formula.notes),
-            bases: formula.bases,
-            colorants: formula.colorants,
-            created: epoch,
-            modified: epoch,
-            org_id: formula.org_id,
-        }
+        new_formula.number = Some(formula.number);
+        new_formula.notes = Some(formula.notes);
+        new_formula.bases = formula.bases.into_iter().map(Base::from).collect();
+        new_formula.colorants = formula.colorants.into_iter().map(Colorant::from).collect();
+
+        new_formula
     }
 }
 
-impl From<proto::UpdateFormulaRequest> for NewFormula {
+impl From<proto::UpdateFormulaRequest> for Formula {
     fn from(formula: proto::UpdateFormulaRequest) -> Self {
-        let epoch = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs() as i64;
+        let mut updated_formula = Formula::new(&formula.org_id, &formula.name);
 
-        NewFormula {
-            id: nanoid!(10),
-            name: formula.name,
-            number: Some(formula.number),
-            notes: Some(formula.notes),
-            bases: formula.bases,
-            colorants: formula.colorants,
-            created: epoch,
-            modified: epoch,
-            org_id: formula.org_id,
-        }
+        updated_formula.id = formula.id;
+        updated_formula.number = Some(formula.number);
+        updated_formula.notes = Some(formula.notes);
+        updated_formula.bases = formula.bases.into_iter().map(Base::from).collect();
+        updated_formula.colorants = formula.colorants.into_iter().map(Colorant::from).collect();
+
+        updated_formula
     }
 }
 
@@ -175,7 +145,7 @@ pub struct Base {
 }
 
 impl Base {
-    pub fn new(org: &str, name: &str) -> Self {
+    pub fn new(org: &str, name: &str, manufacturer: Option<String>) -> Self {
         let epoch = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -184,11 +154,25 @@ impl Base {
         Base {
             id: nanoid!(10),
             name: name.to_string(),
-            manufacturer: None,
+            manufacturer,
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),
             amount: None,
+        }
+    }
+}
+
+impl From<proto::Base> for Base {
+    fn from(base: proto::Base) -> Self {
+        Base {
+            id: base.id,
+            name: base.name,
+            manufacturer: Some(base.manufacturer),
+            amount: Some(base.amount),
+            created: base.created,
+            modified: base.modified,
+            org_id: base.org_id,
         }
     }
 }
@@ -205,7 +189,7 @@ pub struct Colorant {
 }
 
 impl Colorant {
-    pub fn new(org: &str, name: &str) -> Self {
+    pub fn new(org: &str, name: &str, manufacturer: Option<String>) -> Self {
         let epoch = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -214,11 +198,94 @@ impl Colorant {
         Colorant {
             id: nanoid!(10),
             name: name.to_string(),
-            manufacturer: None,
+            manufacturer,
             created: epoch,
             modified: epoch,
             org_id: org.to_string(),
             amount: None,
+        }
+    }
+}
+
+impl From<proto::Colorant> for Colorant {
+    fn from(colorant: proto::Colorant) -> Self {
+        Colorant {
+            id: colorant.id,
+            name: colorant.name,
+            manufacturer: Some(colorant.manufacturer),
+            amount: Some(colorant.amount),
+            created: colorant.created,
+            modified: colorant.modified,
+            org_id: colorant.org_id,
+        }
+    }
+}
+
+#[derive(sqlx::FromRow, Default, Debug, Clone)]
+pub struct Contractor {
+    pub id: String,
+    pub name: String,
+    pub contact: Option<String>,
+    pub created: i64,
+    pub modified: i64,
+    pub org_id: String,
+}
+
+impl Contractor {
+    pub fn new(org: &str, name: &str, contact: Option<String>) -> Self {
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+
+        Contractor {
+            id: nanoid!(10),
+            name: name.to_string(),
+            contact,
+            created: epoch,
+            modified: epoch,
+            org_id: org.to_string(),
+        }
+    }
+}
+
+#[derive(sqlx::FromRow, Default, Debug, Clone)]
+pub struct Job {
+    pub id: String,
+    pub name: String,
+    pub address: Option<String>,
+    pub contact: Option<String>,
+    pub notes: Option<String>,
+    pub created: i64,
+    pub modified: i64,
+    pub contractor_id: String,
+    pub org_id: String,
+}
+
+impl Job {
+    pub fn new(
+        org: &str,
+        name: &str,
+        contractor_id: &str,
+        contact: Option<String>,
+        address: Option<String>,
+        notes: Option<String>,
+    ) -> Self {
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+
+        Job {
+            id: nanoid!(10),
+            name: name.to_string(),
+            address,
+            contact,
+            notes,
+            created: epoch,
+            modified: epoch,
+            contractor_id: contractor_id.to_string(),
+            org_id: org.to_string(),
         }
     }
 }

@@ -26,6 +26,8 @@ pub enum ColorantCommands {
         org_id: String,
         /// Full name of colorant.
         name: String,
+        /// Maker of the colorant
+        manufacturer: Option<String>,
     },
 
     /// Get details about a specific colorant.
@@ -57,6 +59,7 @@ pub async fn create(
     config: conf::cli::Config,
     org_id: &str,
     name: &str,
+    manufacturer: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
     let channel = tonic::transport::Channel::from_shared(config.server.to_string())?;
     let conn = channel.connect().await?;
@@ -65,6 +68,7 @@ pub async fn create(
     let request = tonic::Request::new(CreateColorantRequest {
         org_id: org_id.to_string(),
         name: name.to_string(),
+        manufacturer: manufacturer.unwrap_or_default(),
     });
     client.create_colorant(request).await?;
     Ok(())
