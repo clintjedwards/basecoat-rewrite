@@ -6,11 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = "0.5.4"
 bcrypt = "0.12"
 clap = { version = "3.1.8", features = ["derive"] }
 config = "0.13.0"
 protobuf = "2.27.1"
 prost = "0.10.0"
+hyper = "0.14.18"
+futures = "0.3.21"
+mime_guess = "2.0.4"
 serde = "1.0.136"
 slog = "2.7.0"
 slog-scope = "4.4.0"
@@ -18,8 +22,11 @@ sloggers = "2.1.1"
 sqlx = { version = "0.5", features = ["runtime-tokio-rustls", "sqlite"] }
 nanoid = "0.4.0"                                                          # UUID generation
 rust-embed = "6.3.0"                                                      # We embed the configuration files and frontend
+http = "0.2"
+tower = "0.4.12"
 typetag = "0.1"                                                           # Allow us to deserialize trait objects
 tonic = "0.7.1"
+tonic-web = "0.3.0"
 tonic-reflection = "0.4.0"
 tokio = { version = "1.0", features = ["full"] }
 
