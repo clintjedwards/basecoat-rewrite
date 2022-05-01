@@ -8,6 +8,21 @@ SHELL = /bin/bash
 SEMVER = 0.0.1
 VERSION = ${SEMVER}_${GIT_COMMIT}
 
+## build: build a release version of application
+build:
+	npm run --prefix ./src/frontend build
+	cargo build --release
+
+## run: run development build
+run:
+	npm run --prefix ./src/frontend rebuild-css
+	npm run --prefix ./src/frontend dev
+	cargo run -- service start
+
+## rebuild-css: rebuild the tailwind css file which provides css for other items.
+rebuild-css:
+	npm run --prefix ./src/frontend rebuild-css
+
 ## help: prints this help message
 help:
 	@echo "Usage: "

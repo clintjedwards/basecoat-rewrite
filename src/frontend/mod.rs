@@ -9,6 +9,8 @@ use rust_embed::RustEmbed;
 #[folder = "src/frontend/public"]
 struct EmbeddedFrontendFS;
 
+// An axum compliant method handler that we can use to serve frontend requests from the embedded files
+// in the binary.
 pub async fn frontend_handler(request: axum::http::Request<axum::body::Body>) -> impl IntoResponse {
     let path = request.uri().path().trim_start_matches('/');
     let file = EmbeddedFrontendFS::get(path);

@@ -1,0 +1,27 @@
+{
+  "name": "basecoat",
+  "version": "0.1.0",
+  "description": "frontend component for the basecoat service",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node build.js",
+    "rebuild-css": "npx tailwindcss -i ./tailwind.css -o ./public/build/tailwind.css",
+    "build": "node build.js prod && NODE_ENV=production tailwindcss-cli build ./src/tailwind.css -o ./public/build/tailwind.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/clintjedwards/basecoat"
+  },
+  "author": "clintjedwards",
+  "license": "MIT",
+  "dependencies": {
+    "esbuild": "^0.14.38",
+    "esbuild-svelte": "^0.7.0",
+    "svelte": "^3.48.0",
+    "svelte-routing": "^1.6.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.0.24"
+  }
+}
