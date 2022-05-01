@@ -1,8 +1,10 @@
 use crate::conf;
 use crate::models::{Base, Colorant, Contractor, Formula, Job, Organization, User};
 use crate::proto;
-use crate::proto::basecoat_server::{Basecoat, BasecoatServer};
-use crate::proto::*;
+use crate::proto::{
+    basecoat_server::{Basecoat, BasecoatServer},
+    *,
+};
 use crate::storage;
 use bcrypt::{hash, DEFAULT_COST};
 use slog_scope::info;
