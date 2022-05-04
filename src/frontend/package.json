@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node build.js",
-    "rebuild-css": "npx tailwindcss -i ./tailwind.css -o ./public/build/tailwind.css",
-    "build": "node build.js prod && NODE_ENV=production tailwindcss-cli build ./src/tailwind.css -o ./public/build/tailwind.css"
+    "rebuild-js": "node build.js",
+    "rebuild-css": "npx tailwindcss -i ./tailwind.css -o ./public/build/tailwind.css --watch",
+    "release": "node build.js prod && NODE_ENV=production tailwindcss-cli build ./src/tailwind.css -o ./public/build/tailwind.css"
   },
   "repository": {
     "type": "git",

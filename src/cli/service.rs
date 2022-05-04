@@ -10,6 +10,7 @@ use futures::{
     ready, TryFutureExt,
 };
 use hyper::{Body, Request, Response};
+use slog_scope::info;
 use std::error::Error;
 use std::{convert::Infallible, task::Poll};
 use tower::Service;
@@ -37,6 +38,8 @@ pub async fn start(config: conf::api::Config) {
     let grpc = api::Api::new(config.clone()).await.init_grpc_server();
 
     let service = MultiplexService { rest, grpc };
+
+    info!("Started grpc-web service"; "url" => &config.server.url.parse::<String>().unwrap());
 
     axum::Server::bind(&config.server.url.parse().unwrap())
         .tcp_keepalive(Some(std::time::Duration::from_secs(15)))

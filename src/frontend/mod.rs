@@ -23,9 +23,16 @@ pub async fn frontend_handler(request: axum::http::Request<axum::body::Body>) ->
                 .body(payload)
                 .unwrap()
         }
-        None => Response::builder()
-            .status(StatusCode::NOT_FOUND)
-            .body(boxed(Full::from("404 not found")))
-            .unwrap(),
+        // Due to history mode of single page applications we want to redirect to index.html
+        // anytime there isn't a path that makes sense.
+        None => {
+            let file = EmbeddedFrontendFS::get("index.html").unwrap();
+            let payload = boxed(Full::from(file.data));
+            let mime = mime_guess::from_path("index.html").first_or_octet_stream();
+            Response::builder()
+                .header(header::CONTENT_TYPE, mime.as_ref())
+                .body(payload)
+                .unwrap()
+        }
     }
 }
