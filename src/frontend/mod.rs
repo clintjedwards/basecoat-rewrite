@@ -1,12 +1,12 @@
 use axum::{
     body::{boxed, Full},
-    http::{header, StatusCode},
+    http::header,
     response::{IntoResponse, Response},
 };
 use rust_embed::RustEmbed;
 
 #[derive(RustEmbed)]
-#[folder = "src/frontend/public"]
+#[folder = "src/frontend/dist"]
 struct EmbeddedFrontendFS;
 
 // An axum compliant method handler that we can use to serve frontend requests from the embedded files
