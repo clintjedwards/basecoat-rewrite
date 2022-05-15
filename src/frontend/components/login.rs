@@ -10,13 +10,24 @@ impl Component for Login {
         Self {}
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <h1 class="text-8xl">{"Yew works!"}</h1>
+            <div>
+                <h1 class="text-8xl">{"Basecoat"}</h1>
+
+                <label for="organization">{"Organization:"}</label>
+                <input type="text" id="organization" placeholder="Organization Name" autocomplete="off" />
+
+                <label for="username">{"Username:"}</label>
+                <input type="text" id="username" placeholder="Username" autocomplete="off" />
+
+                <label for="password">{"Password:"}</label>
+                <input type="text" id="password" placeholder="Password" autocomplete="off" />
+            </div>
         }
     }
 }
