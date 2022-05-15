@@ -9,6 +9,9 @@ edition = "2021"
 yew = "0.19"
 yew-router = "0.16"
 
+[build-dependencies]
+tonic-build = "0.7.0"
+
 [[bin]]
 name = "frontend"
 path = "main.rs"
