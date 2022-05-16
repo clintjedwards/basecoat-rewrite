@@ -2,18 +2,18 @@ use crate::models::APIToken;
 use crate::storage::Db;
 
 impl Db {
-    pub async fn get_api_token(&self, org: &str, hash: &str) -> APIToken {
+    pub async fn get_api_token(&self, org: &str, encrypted_token: &str) -> APIToken {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
         sqlx::query_as::<_, APIToken>(
             r#"
-        SELECT hash, created, duration, org_id
+        SELECT encrypted_token, created, duration, org_id
         FROM api_tokens
-        WHERE org_id = ? AND hash = ?
+        WHERE org_id = ? AND encrypted_token = ?
             "#,
         )
         .bind(org)
-        .bind(hash)
+        .bind(encrypted_token)
         .fetch_one(&mut conn)
         .await
         .unwrap()
@@ -24,11 +24,11 @@ impl Db {
 
         sqlx::query(
             r#"
-        INSERT INTO api_tokens (hash, created, duration, org_id)
+        INSERT INTO api_tokens (encrypted_token, created, duration, org_id)
         VALUES (?, ?, ?, ?)
             "#,
         )
-        .bind(&token.hash)
+        .bind(&token.encrypted_token)
         .bind(token.created)
         .bind(token.duration)
         .bind(&token.org_id)
@@ -37,19 +37,17 @@ impl Db {
         .unwrap();
     }
 
-    pub async fn delete_api_token(&self, token: &APIToken) {
+    pub async fn delete_api_token(&self, org_id: &str, token: &str) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
         sqlx::query(
             r#"
-        INSERT INTO api_tokens (hash, created, duration, org_id)
-        VALUES (?, ?, ?, ?)
+        DELETE FROM api_tokens
+        WHERE org_id = ? AND encrypted_token = ?
             "#,
         )
-        .bind(&token.hash)
-        .bind(token.created)
-        .bind(token.duration)
-        .bind(&token.org_id)
+        .bind(&org_id)
+        .bind(&token)
         .execute(&mut conn)
         .await
         .unwrap();

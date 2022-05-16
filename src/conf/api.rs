@@ -10,6 +10,7 @@ pub struct Config {
 pub struct General {
     pub debug: bool,
     pub log_level: String,
+    pub encryption_key: String,
 }
 
 #[derive(Deserialize, Default, Debug, Clone)]

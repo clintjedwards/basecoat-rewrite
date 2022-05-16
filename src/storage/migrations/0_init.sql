@@ -127,11 +127,13 @@ CREATE TABLE IF NOT EXISTS jobs_formulas (
     PRIMARY KEY (job_id, formula_id, org_id)
 ) STRICT;
 
-CREATE TABLE IF NOT EXISTS api_keys (
-    hash     TEXT    NOT NULL,
-    created  INTEGER NOT NULL,
-    duration INTEGER NOT NULL,
-    org_id   TEXT    NOT NULL,
+CREATE TABLE IF NOT EXISTS api_tokens (
+    encrypted_token     TEXT    NOT NULL,
+    created             INTEGER NOT NULL,
+    duration            INTEGER NOT NULL,
+    org_id              TEXT    NOT NULL,
+    username            TEXT    NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(name) ON DELETE CASCADE,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
-    PRIMARY KEY (hash, org_id)
+    PRIMARY KEY (encrypted_token, org_id)
 ) STRICT;

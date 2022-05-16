@@ -1,8 +1,6 @@
 use crate::proto;
 use bcrypt::{hash, DEFAULT_COST};
 use nanoid::nanoid;
-use rand::Rng;
-use sha2::{Digest, Sha256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(sqlx::FromRow, Default, Debug, Clone)]
@@ -292,36 +290,31 @@ impl Job {
 
 #[derive(sqlx::FromRow, Default, Debug, Clone)]
 pub struct APIToken {
-    pub hash: String,
+    pub encrypted_token: String,
     pub created: i64,
     pub duration: i64,
     pub org_id: String,
+    pub username: String,
 }
 
 impl APIToken {
-    pub fn new(duration: std::time::Duration, org_id: &str) -> (Self, String) {
+    pub fn new(
+        org_id: &str,
+        username: &str,
+        duration: std::time::Duration,
+        encrypted_token: &str,
+    ) -> Self {
         let epoch = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs() as i64;
 
-        let new_token: String = rand::thread_rng()
-            .sample_iter::<char, _>(rand::distributions::Standard)
-            .take(10)
-            .collect();
-
-        let mut hasher = Sha256::new();
-        hasher.update(new_token.clone());
-        let result = hasher.finalize();
-
-        (
-            APIToken {
-                hash: format!("{:x}", result),
-                created: epoch,
-                duration: duration.as_secs() as i64,
-                org_id: org_id.to_string(),
-            },
-            new_token,
-        )
+        APIToken {
+            encrypted_token: encrypted_token.to_string(),
+            created: epoch,
+            duration: duration.as_secs() as i64,
+            org_id: org_id.to_string(),
+            username: username.to_string(),
+        }
     }
 }

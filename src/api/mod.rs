@@ -7,6 +7,8 @@ use crate::proto::{
 };
 use crate::storage;
 use bcrypt::{hash, verify, DEFAULT_COST};
+use magic_crypt::{new_magic_crypt, MagicCryptTrait};
+use rand::Rng;
 use slog_scope::info;
 use std::time::Duration;
 use tonic::{Request, Response, Status};
@@ -32,6 +34,67 @@ impl Basecoat for Api {
             frontend_enabled: false,
             semver: BUILD_SEMVER.to_string(),
         }))
+    }
+
+    async fn create_api_token(
+        &self,
+        request: Request<CreateApiTokenRequest>,
+    ) -> Result<Response<CreateApiTokenResponse>, Status> {
+        let args = &request.into_inner();
+
+        let user: User = self.storage.get_user(&args.org_id, &args.name).await;
+        let valid = verify(&args.password, &user.hash).unwrap();
+
+        let new_token: String = rand::thread_rng()
+            .sample_iter::<char, _>(rand::distributions::Standard)
+            .take(10)
+            .collect();
+
+        let cryptor = new_magic_crypt!(&self.conf.general.encryption_key, 256);
+        let encrypted_token = cryptor.encrypt_str_to_base64(new_token.clone());
+
+        if valid {
+            let token = APIToken::new(
+                &args.org_id,
+                &user.name,
+                Duration::from_secs(args.duration as u64),
+                &encrypted_token,
+            );
+
+            self.storage.create_api_token(&token).await;
+            return Ok(Response::new(CreateApiTokenResponse { key: new_token }));
+        }
+
+        Err(Status::permission_denied("auth failed"))
+    }
+
+    async fn revoke_api_token(
+        &self,
+        request: Request<RevokeApiTokenRequest>,
+    ) -> Result<Response<RevokeApiTokenResponse>, Status> {
+        let args = &request.into_inner();
+
+        let user: User = self.storage.get_user(&args.org_id, &args.name).await;
+
+        let new_token: String = rand::thread_rng()
+            .sample_iter::<char, _>(rand::distributions::Standard)
+            .take(10)
+            .collect();
+
+        let cryptor = new_magic_crypt!(&self.conf.general.encryption_key, 256);
+        let encrypted_token = cryptor.encrypt_str_to_base64(new_token.clone());
+
+        let api_token: APIToken = self.storage.get_api_token(&args.org_id, &args.key).await;
+
+        if api_token.username != user.name {
+            return Err(Status::permission_denied("login failed"));
+        }
+
+        self.storage
+            .delete_api_token(&user.org_id, &encrypted_token)
+            .await;
+
+        Ok(Response::new(RevokeApiTokenResponse {}))
     }
 
     async fn create_organization(
@@ -97,26 +160,6 @@ impl Basecoat for Api {
 
         info!("Created new user"; "name" => user.name);
         Ok(Response::new(CreateUserResponse {}))
-    }
-
-    async fn login_user(
-        &self,
-        request: Request<LoginUserRequest>,
-    ) -> Result<Response<LoginUserResponse>, Status> {
-        let args = &request.into_inner();
-
-        let user: User = self.storage.get_user(&args.org_id, &args.name).await;
-        let valid = verify(&args.password, &user.hash).unwrap();
-
-        if valid {
-            let (token_object, token) =
-                APIToken::new(Duration::from_secs(args.duration as u64), &args.org_id);
-
-            self.storage.create_api_token(&token_object).await;
-            return Ok(Response::new(LoginUserResponse { key: token }));
-        }
-
-        Err(Status::permission_denied("login failed"))
     }
 
     async fn describe_user(

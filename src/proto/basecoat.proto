@@ -9,6 +9,8 @@ import "basecoat_transport.proto";
 service Basecoat {
   // System endpoints
   rpc GetSystemInfo(GetSystemInfoRequest) returns (GetSystemInfoResponse);
+  rpc CreateAPIToken(CreateAPITokenRequest) returns (CreateAPITokenResponse);
+  rpc RevokeAPIToken(RevokeAPITokenRequest) returns (RevokeAPITokenResponse);
 
   // Organization routes (Admin only)
   rpc ListOrganizations(ListOrganizationsRequest)
@@ -22,7 +24,6 @@ service Basecoat {
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
   rpc DescribeUser(DescribeUserRequest) returns (DescribeUserResponse);
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
-  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
   rpc ResetUserPassword(ResetUserPasswordRequest)
       returns (ResetUserPasswordResponse);
   rpc ToggleUserState(ToggleUserStateRequest) returns (ToggleUserStateResponse);
