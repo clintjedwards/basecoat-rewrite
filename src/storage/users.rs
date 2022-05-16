@@ -9,10 +9,10 @@ impl Db {
 
         sqlx::query_as::<_, User>(
             r#"
-        SELECT id, name, state, created, modified, org_id
+        SELECT name, state, created, modified, org_id
         FROM users
         WHERE org_id = ?
-        ORDER BY id
+        ORDER BY name
             "#,
         )
         .bind(org)
@@ -26,11 +26,10 @@ impl Db {
 
         sqlx::query(
             r#"
-        INSERT INTO users (id, name, hash, state, created, modified, org_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (name, hash, state, created, modified, org_id)
+        VALUES (?, ?, ?, ?, ?, ?)
             "#,
         )
-        .bind(&user.id)
         .bind(&user.name)
         .bind(&user.hash)
         .bind(&user.state)
@@ -42,54 +41,54 @@ impl Db {
         .unwrap();
     }
 
-    pub async fn get_user(&self, org: &str, id: &str) -> User {
+    pub async fn get_user(&self, org: &str, name: &str) -> User {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
         sqlx::query_as::<_, User>(
             r#"
-        SELECT id, name, hash, state, created, modified, org_id
+        SELECT name, hash, state, created, modified, org_id
         FROM users
-        WHERE org_id = ? AND id = ?
+        WHERE org_id = ? AND name = ?
             "#,
         )
         .bind(org)
-        .bind(id)
+        .bind(name)
         .fetch_one(&mut conn)
         .await
         .unwrap()
     }
 
-    pub async fn reset_user_password(&self, org: &str, id: &str, hash: &str) {
+    pub async fn reset_user_password(&self, org: &str, name: &str, hash: &str) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
 
         sqlx::query(
             r#"
         UPDATE users
         SET hash = ?
-        WHERE org_id = ? AND id = ?
+        WHERE org_id = ? AND name = ?
             "#,
         )
         .bind(hash)
         .bind(org)
-        .bind(id)
+        .bind(name)
         .execute(&mut conn)
         .await
         .unwrap();
     }
 
-    pub async fn toggle_user_state(&self, org: &str, id: &str) {
+    pub async fn toggle_user_state(&self, org: &str, name: &str) {
         let mut conn = self.conn.as_ref().unwrap().acquire().await.unwrap();
         let mut tx = conn.begin().await.unwrap();
 
         let current_user = sqlx::query_as::<_, User>(
             r#"
-        SELECT id, name, hash, state, created, modified, org_id
+        SELECT name, hash, state, created, modified, org_id
         FROM users
-        WHERE org_id = ? AND id = ?
+        WHERE org_id = ? AND name = ?
             "#,
         )
         .bind(org)
-        .bind(id)
+        .bind(name)
         .fetch_one(&mut tx)
         .await
         .unwrap();
@@ -106,12 +105,12 @@ impl Db {
             r#"
         UPDATE users
         SET state = ?
-        WHERE org_id = ? AND id = ?
+        WHERE org_id = ? AND name = ?
             "#,
         )
         .bind(opposite_state)
         .bind(org)
-        .bind(id)
+        .bind(name)
         .execute(&mut tx)
         .await
         .unwrap();

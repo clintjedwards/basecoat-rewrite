@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS organizations (
 CREATE INDEX idx_organizations_name ON organizations (name);
 
 CREATE TABLE IF NOT EXISTS users (
-    id       TEXT    NOT NULL,
     name     TEXT    NOT NULL,
     hash     TEXT    NOT NULL,
     state    TEXT    NOT NULL,
@@ -22,7 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
     modified INTEGER NOT NULL,
     org_id   TEXT    NOT NULL,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
-    PRIMARY KEY (id, org_id)
+    PRIMARY KEY (name, org_id)
 ) STRICT;
 
 CREATE TABLE IF NOT EXISTS bases (
@@ -126,4 +125,13 @@ CREATE TABLE IF NOT EXISTS jobs_formulas (
     FOREIGN KEY (formula_id) REFERENCES formulas(id) ON DELETE CASCADE,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
     PRIMARY KEY (job_id, formula_id, org_id)
+) STRICT;
+
+CREATE TABLE IF NOT EXISTS api_keys (
+    hash     TEXT    NOT NULL,
+    created  INTEGER NOT NULL,
+    duration INTEGER NOT NULL,
+    org_id   TEXT    NOT NULL,
+    FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    PRIMARY KEY (hash, org_id)
 ) STRICT;

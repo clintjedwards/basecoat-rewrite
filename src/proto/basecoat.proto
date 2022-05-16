@@ -22,6 +22,7 @@ service Basecoat {
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
   rpc DescribeUser(DescribeUserRequest) returns (DescribeUserResponse);
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
   rpc ResetUserPassword(ResetUserPasswordRequest)
       returns (ResetUserPasswordResponse);
   rpc ToggleUserState(ToggleUserStateRequest) returns (ToggleUserStateResponse);

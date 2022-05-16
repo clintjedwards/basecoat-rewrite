@@ -36,6 +36,13 @@ message CreateUserRequest {
   string password = 3;
 }
 message CreateUserResponse {}
+message LoginUserRequest {
+  string org_id = 1;
+  string name = 2;
+  string password = 3;
+  int64 duration = 4; // length of time the api key stays valid
+}
+message LoginUserResponse { string key = 1; }
 message ResetUserPasswordRequest {
   string org_id = 1;
   string id = 2;

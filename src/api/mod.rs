@@ -1,13 +1,14 @@
 use crate::conf;
-use crate::models::{Base, Colorant, Contractor, Formula, Job, Organization, User};
+use crate::models::{APIToken, Base, Colorant, Contractor, Formula, Job, Organization, User};
 use crate::proto;
 use crate::proto::{
     basecoat_server::{Basecoat, BasecoatServer},
     *,
 };
 use crate::storage;
-use bcrypt::{hash, DEFAULT_COST};
+use bcrypt::{hash, verify, DEFAULT_COST};
 use slog_scope::info;
+use std::time::Duration;
 use tonic::{Request, Response, Status};
 
 const BUILD_SEMVER: &str = env!("BUILD_SEMVER");
@@ -94,8 +95,28 @@ impl Basecoat for Api {
 
         self.storage.create_user(&user).await;
 
-        info!("Created new user"; "id" => user.id, "name" => user.name);
+        info!("Created new user"; "name" => user.name);
         Ok(Response::new(CreateUserResponse {}))
+    }
+
+    async fn login_user(
+        &self,
+        request: Request<LoginUserRequest>,
+    ) -> Result<Response<LoginUserResponse>, Status> {
+        let args = &request.into_inner();
+
+        let user: User = self.storage.get_user(&args.org_id, &args.name).await;
+        let valid = verify(&args.password, &user.hash).unwrap();
+
+        if valid {
+            let (token_object, token) =
+                APIToken::new(Duration::from_secs(args.duration as u64), &args.org_id);
+
+            self.storage.create_api_token(&token_object).await;
+            return Ok(Response::new(LoginUserResponse { key: token }));
+        }
+
+        Err(Status::permission_denied("login failed"))
     }
 
     async fn describe_user(

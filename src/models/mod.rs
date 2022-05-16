@@ -1,6 +1,8 @@
 use crate::proto;
 use bcrypt::{hash, DEFAULT_COST};
 use nanoid::nanoid;
+use rand::Rng;
+use sha2::{Digest, Sha256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(sqlx::FromRow, Default, Debug, Clone)]
@@ -42,7 +44,6 @@ impl Default for UserState {
 
 #[derive(sqlx::FromRow, Default, Debug, Clone)]
 pub struct User {
-    pub id: String,
     pub name: String,
     pub hash: String,
     pub state: UserState,
@@ -61,7 +62,6 @@ impl User {
         let hashed = hash(password, DEFAULT_COST).unwrap();
 
         User {
-            id: nanoid!(10),
             name: name.to_string(),
             hash: hashed,
             state: UserState::Active,
@@ -287,5 +287,41 @@ impl Job {
             contractor_id: contractor_id.to_string(),
             org_id: org.to_string(),
         }
+    }
+}
+
+#[derive(sqlx::FromRow, Default, Debug, Clone)]
+pub struct APIToken {
+    pub hash: String,
+    pub created: i64,
+    pub duration: i64,
+    pub org_id: String,
+}
+
+impl APIToken {
+    pub fn new(duration: std::time::Duration, org_id: &str) -> (Self, String) {
+        let epoch = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+
+        let new_token: String = rand::thread_rng()
+            .sample_iter::<char, _>(rand::distributions::Standard)
+            .take(10)
+            .collect();
+
+        let mut hasher = Sha256::new();
+        hasher.update(new_token.clone());
+        let result = hasher.finalize();
+
+        (
+            APIToken {
+                hash: format!("{:x}", result),
+                created: epoch,
+                duration: duration.as_secs() as i64,
+                org_id: org_id.to_string(),
+            },
+            new_token,
+        )
     }
 }

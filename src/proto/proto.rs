@@ -13,15 +13,13 @@ pub struct Organization {
 /// User represents a user user.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct User {
-    #[prost(string, tag="1")]
-    pub id: ::prost::alloc::string::String,
-    #[prost(enumeration="user::State", tag="2")]
+    #[prost(enumeration="user::State", tag="1")]
     pub state: i32,
-    #[prost(int64, tag="3")]
+    #[prost(int64, tag="2")]
     pub created: i64,
-    #[prost(int64, tag="4")]
+    #[prost(int64, tag="3")]
     pub modified: i64,
-    #[prost(string, tag="5")]
+    #[prost(string, tag="4")]
     pub org_id: ::prost::alloc::string::String,
 }
 /// Nested message and enum types in `User`.
@@ -216,6 +214,23 @@ pub struct CreateUserRequest {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateUserResponse {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LoginUserRequest {
+    #[prost(string, tag="1")]
+    pub org_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub password: ::prost::alloc::string::String,
+    /// length of time the api key stays valid
+    #[prost(int64, tag="4")]
+    pub duration: i64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LoginUserResponse {
+    #[prost(string, tag="1")]
+    pub key: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResetUserPasswordRequest {
@@ -762,6 +777,23 @@ pub mod basecoat_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/proto.Basecoat/CreateUser",
             );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        pub async fn login_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::LoginUserRequest>,
+        ) -> Result<tonic::Response<super::LoginUserResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/proto.Basecoat/LoginUser");
             self.inner.unary(request.into_request(), path, codec).await
         }
         pub async fn reset_user_password(
@@ -1315,6 +1347,10 @@ pub mod basecoat_server {
             &self,
             request: tonic::Request<super::CreateUserRequest>,
         ) -> Result<tonic::Response<super::CreateUserResponse>, tonic::Status>;
+        async fn login_user(
+            &self,
+            request: tonic::Request<super::LoginUserRequest>,
+        ) -> Result<tonic::Response<super::LoginUserResponse>, tonic::Status>;
         async fn reset_user_password(
             &self,
             request: tonic::Request<super::ResetUserPasswordRequest>,
@@ -1741,6 +1777,44 @@ pub mod basecoat_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = CreateUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/proto.Basecoat/LoginUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct LoginUserSvc<T: Basecoat>(pub Arc<T>);
+                    impl<
+                        T: Basecoat,
+                    > tonic::server::UnaryService<super::LoginUserRequest>
+                    for LoginUserSvc<T> {
+                        type Response = super::LoginUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::LoginUserRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).login_user(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = LoginUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

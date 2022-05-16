@@ -13,16 +13,15 @@ message Organization {
 
 // User represents a user user.
 message User {
-  string id = 1;
   enum State {
     UNKNOWN = 0;
     ACTIVE = 1;
     DISABLED = 2;
   }
-  State state = 2;
-  int64 created = 3;
-  int64 modified = 4;
-  string org_id = 5;
+  State state = 1;
+  int64 created = 2;
+  int64 modified = 3;
+  string org_id = 4;
 }
 
 message Formula {
