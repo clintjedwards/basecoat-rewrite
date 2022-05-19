@@ -422,11 +422,10 @@ proto.proto.User.prototype.toObject = function(opt_includeInstance) {
  */
 proto.proto.User.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    state: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    created: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    modified: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    orgId: jspb.Message.getFieldWithDefault(msg, 5, "")
+    state: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    created: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    modified: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    orgId: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -464,22 +463,18 @@ proto.proto.User.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setId(value);
-      break;
-    case 2:
       var value = /** @type {!proto.proto.User.State} */ (reader.readEnum());
       msg.setState(value);
       break;
-    case 3:
+    case 2:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setCreated(value);
       break;
-    case 4:
+    case 3:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setModified(value);
       break;
-    case 5:
+    case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setOrgId(value);
       break;
@@ -512,38 +507,31 @@ proto.proto.User.prototype.serializeBinary = function() {
  */
 proto.proto.User.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
   f = message.getState();
   if (f !== 0.0) {
     writer.writeEnum(
-      2,
+      1,
       f
     );
   }
   f = message.getCreated();
   if (f !== 0) {
     writer.writeInt64(
-      3,
+      2,
       f
     );
   }
   f = message.getModified();
   if (f !== 0) {
     writer.writeInt64(
-      4,
+      3,
       f
     );
   }
   f = message.getOrgId();
   if (f.length > 0) {
     writer.writeString(
-      5,
+      4,
       f
     );
   }
@@ -560,29 +548,11 @@ proto.proto.User.State = {
 };
 
 /**
- * optional string id = 1;
- * @return {string}
- */
-proto.proto.User.prototype.getId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.proto.User} returns this
- */
-proto.proto.User.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional State state = 2;
+ * optional State state = 1;
  * @return {!proto.proto.User.State}
  */
 proto.proto.User.prototype.getState = function() {
-  return /** @type {!proto.proto.User.State} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+  return /** @type {!proto.proto.User.State} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
@@ -591,16 +561,16 @@ proto.proto.User.prototype.getState = function() {
  * @return {!proto.proto.User} returns this
  */
 proto.proto.User.prototype.setState = function(value) {
-  return jspb.Message.setProto3EnumField(this, 2, value);
+  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
 /**
- * optional int64 created = 3;
+ * optional int64 created = 2;
  * @return {number}
  */
 proto.proto.User.prototype.getCreated = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
@@ -609,16 +579,16 @@ proto.proto.User.prototype.getCreated = function() {
  * @return {!proto.proto.User} returns this
  */
 proto.proto.User.prototype.setCreated = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
 /**
- * optional int64 modified = 4;
+ * optional int64 modified = 3;
  * @return {number}
  */
 proto.proto.User.prototype.getModified = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
@@ -627,16 +597,16 @@ proto.proto.User.prototype.getModified = function() {
  * @return {!proto.proto.User} returns this
  */
 proto.proto.User.prototype.setModified = function(value) {
-  return jspb.Message.setProto3IntField(this, 4, value);
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
 /**
- * optional string org_id = 5;
+ * optional string org_id = 4;
  * @return {string}
  */
 proto.proto.User.prototype.getOrgId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
@@ -645,7 +615,7 @@ proto.proto.User.prototype.getOrgId = function() {
  * @return {!proto.proto.User} returns this
  */
 proto.proto.User.prototype.setOrgId = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

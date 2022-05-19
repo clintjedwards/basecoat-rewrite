@@ -136,6 +136,128 @@ proto.proto.BasecoatPromiseClient.prototype.getSystemInfo =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.proto.CreateAPITokenRequest,
+ *   !proto.proto.CreateAPITokenResponse>}
+ */
+const methodDescriptor_Basecoat_CreateAPIToken = new grpc.web.MethodDescriptor(
+  '/proto.Basecoat/CreateAPIToken',
+  grpc.web.MethodType.UNARY,
+  basecoat_transport_pb.CreateAPITokenRequest,
+  basecoat_transport_pb.CreateAPITokenResponse,
+  /**
+   * @param {!proto.proto.CreateAPITokenRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  basecoat_transport_pb.CreateAPITokenResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.proto.CreateAPITokenRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.proto.CreateAPITokenResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.proto.CreateAPITokenResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.proto.BasecoatClient.prototype.createAPIToken =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/proto.Basecoat/CreateAPIToken',
+      request,
+      metadata || {},
+      methodDescriptor_Basecoat_CreateAPIToken,
+      callback);
+};
+
+
+/**
+ * @param {!proto.proto.CreateAPITokenRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.proto.CreateAPITokenResponse>}
+ *     Promise that resolves to the response
+ */
+proto.proto.BasecoatPromiseClient.prototype.createAPIToken =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/proto.Basecoat/CreateAPIToken',
+      request,
+      metadata || {},
+      methodDescriptor_Basecoat_CreateAPIToken);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.proto.RevokeAPITokenRequest,
+ *   !proto.proto.RevokeAPITokenResponse>}
+ */
+const methodDescriptor_Basecoat_RevokeAPIToken = new grpc.web.MethodDescriptor(
+  '/proto.Basecoat/RevokeAPIToken',
+  grpc.web.MethodType.UNARY,
+  basecoat_transport_pb.RevokeAPITokenRequest,
+  basecoat_transport_pb.RevokeAPITokenResponse,
+  /**
+   * @param {!proto.proto.RevokeAPITokenRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  basecoat_transport_pb.RevokeAPITokenResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.proto.RevokeAPITokenRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.proto.RevokeAPITokenResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.proto.RevokeAPITokenResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.proto.BasecoatClient.prototype.revokeAPIToken =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/proto.Basecoat/RevokeAPIToken',
+      request,
+      metadata || {},
+      methodDescriptor_Basecoat_RevokeAPIToken,
+      callback);
+};
+
+
+/**
+ * @param {!proto.proto.RevokeAPITokenRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.proto.RevokeAPITokenResponse>}
+ *     Promise that resolves to the response
+ */
+proto.proto.BasecoatPromiseClient.prototype.revokeAPIToken =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/proto.Basecoat/RevokeAPIToken',
+      request,
+      metadata || {},
+      methodDescriptor_Basecoat_RevokeAPIToken);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.proto.ListOrganizationsRequest,
  *   !proto.proto.ListOrganizationsResponse>}
  */

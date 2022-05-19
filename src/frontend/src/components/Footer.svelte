@@ -1,6 +1,6 @@
 <script>
-  import { BasecoatClient } from "../basecoat_grpc_web_pb";
-  import { GetSystemInfoRequest } from "../basecoat_transport_pb";
+  import { BasecoatClient } from "../proto/basecoat_grpc_web_pb";
+  import { GetSystemInfoRequest } from "../proto/basecoat_transport_pb";
 
   url = location.protocol + "//" + location.host;
   var basecoat_client = new BasecoatClient(url, null, null);
