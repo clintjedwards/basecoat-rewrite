@@ -1,28 +1,23 @@
-#NODE_ENV=production tailwindcss -c ./tailwind.config.js -o ./tailwind.css --minify
-#npx tailwindcss -i ./tailwind.css -o ./public/build/tailwind.css --watch"
+## autorebuild-css: start tailwind css with watch option
+autorebuild-css:
+	npm run --prefix ./src/frontend rebuild-css
 
+## autorebuild-js: start esbuild with watch option
+autorebuild-js:
+	npm run --prefix ./src/frontend rebuild-js
 
-autobuild-js:
-	cd ./src/frontend && trunk watch
-
-autobuild-css:
-	cd ./src/frontend && tailwindcss -i ./tailwind.css -o ./tailwind-generated.css --watch
-
-build-css:
-	cd ./src/frontend && NODE_ENV=production tailwindcss -c ./tailwind.config.js -o ./tailwind-generated.css --minify
-
-build-js:
-	cd ./src/frontend && trunk build
-
+## start-service: start basecoat service
 start-service:
+	protoc --js_out=import_style=commonjs:./src/frontend/src/ --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./src/frontend/src/ -I ./src/proto/ src/proto/*.proto
 	cargo run -- service start
 
-build: build-css build-js
+## run: build dev mode with auto-rebuild options; ex: make run -j3
+run: autorebuild-css autorebuild-js start-service
+
+## release: build with production flags
+release:
+	npm run --prefix ./src/frontend release
 	cargo build --release
-
-## run: TODO(clintjedwards):
-run: autobuild-js autobuild-css start-service
-
 
 ## help: prints this help message
 help:
