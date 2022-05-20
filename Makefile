@@ -8,7 +8,7 @@ autorebuild-js:
 
 ## start-service: start basecoat service
 start-service:
-	protoc --js_out=import_style=commonjs:./src/frontend/src/proto/ --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./src/frontend/src/proto/ -I ./src/proto/ src/proto/*.proto
+	protoc --js_out=import_style=commonjs,binary:./src/frontend/src/proto/ --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./src/frontend/src/proto/ -I ./src/proto/ src/proto/*.proto
 	cargo run -- service start
 
 ## run: build dev mode with auto-rebuild options; ex: make run -j3

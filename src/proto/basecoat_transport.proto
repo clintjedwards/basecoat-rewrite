@@ -10,8 +10,7 @@ message GetSystemInfoRequest {}
 message GetSystemInfoResponse {
   string commit = 1;
   bool debug_enabled = 2;
-  bool frontend_enabled = 3;
-  string semver = 4;
+  string semver = 3;
 }
 
 message CreateAPITokenRequest {

@@ -1736,8 +1736,7 @@ proto.proto.GetSystemInfoResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     commit: jspb.Message.getFieldWithDefault(msg, 1, ""),
     debugEnabled: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    frontendEnabled: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    semver: jspb.Message.getFieldWithDefault(msg, 4, "")
+    semver: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -1783,10 +1782,6 @@ proto.proto.GetSystemInfoResponse.deserializeBinaryFromReader = function(msg, re
       msg.setDebugEnabled(value);
       break;
     case 3:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setFrontendEnabled(value);
-      break;
-    case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setSemver(value);
       break;
@@ -1833,17 +1828,10 @@ proto.proto.GetSystemInfoResponse.serializeBinaryToWriter = function(message, wr
       f
     );
   }
-  f = message.getFrontendEnabled();
-  if (f) {
-    writer.writeBool(
-      3,
-      f
-    );
-  }
   f = message.getSemver();
   if (f.length > 0) {
     writer.writeString(
-      4,
+      3,
       f
     );
   }
@@ -1887,29 +1875,11 @@ proto.proto.GetSystemInfoResponse.prototype.setDebugEnabled = function(value) {
 
 
 /**
- * optional bool frontend_enabled = 3;
- * @return {boolean}
- */
-proto.proto.GetSystemInfoResponse.prototype.getFrontendEnabled = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.proto.GetSystemInfoResponse} returns this
- */
-proto.proto.GetSystemInfoResponse.prototype.setFrontendEnabled = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 3, value);
-};
-
-
-/**
- * optional string semver = 4;
+ * optional string semver = 3;
  * @return {string}
  */
 proto.proto.GetSystemInfoResponse.prototype.getSemver = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -1918,7 +1888,7 @@ proto.proto.GetSystemInfoResponse.prototype.getSemver = function() {
  * @return {!proto.proto.GetSystemInfoResponse} returns this
  */
 proto.proto.GetSystemInfoResponse.prototype.setSemver = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

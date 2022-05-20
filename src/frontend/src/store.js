@@ -1,3 +1,3 @@
-const GeneralStore = writeable({});
+import { writable } from "svelte/store";
 
-export { GeneralStore };
+export const AppStore = writable({});

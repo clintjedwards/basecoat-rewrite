@@ -31,7 +31,6 @@ impl Basecoat for Api {
         Ok(Response::new(GetSystemInfoResponse {
             commit: BUILD_COMMIT.to_string(),
             debug_enabled: false,
-            frontend_enabled: false,
             semver: BUILD_SEMVER.to_string(),
         }))
     }

@@ -148,9 +148,7 @@ pub struct GetSystemInfoResponse {
     pub commit: ::prost::alloc::string::String,
     #[prost(bool, tag="2")]
     pub debug_enabled: bool,
-    #[prost(bool, tag="3")]
-    pub frontend_enabled: bool,
-    #[prost(string, tag="4")]
+    #[prost(string, tag="3")]
     pub semver: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
